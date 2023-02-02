@@ -14,14 +14,9 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.paymentsemailverification.config
+package uk.gov.hmrc.paymentsemailverification.models
 
-import com.google.inject.AbstractModule
+import java.util.UUID
 
-class Module extends AbstractModule {
+final case class CorrelationId(value: UUID)
 
-  override def configure(): Unit = {
-
-    bind(classOf[AppConfig]).asEagerSingleton()
-  }
-}

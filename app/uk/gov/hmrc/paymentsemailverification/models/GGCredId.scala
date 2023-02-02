@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.paymentsemailverification.config
+package uk.gov.hmrc.paymentsemailverification.models
 
-import com.google.inject.AbstractModule
+import play.api.libs.json.{Format, Json}
 
-class Module extends AbstractModule {
+final case class GGCredId(value: String) extends AnyVal
 
-  override def configure(): Unit = {
+object GGCredId {
 
-    bind(classOf[AppConfig]).asEagerSingleton()
-  }
+  implicit val format: Format[GGCredId] = Json.valueFormat
+
 }

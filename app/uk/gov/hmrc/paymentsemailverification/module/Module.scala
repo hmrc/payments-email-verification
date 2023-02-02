@@ -14,14 +14,21 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.paymentsemailverification.config
+package uk.gov.hmrc.paymentsemailverification.module
 
-import com.google.inject.AbstractModule
+import play.api.inject.{Binding, Module => PlayModule}
+import play.api.{Configuration, Environment}
+import uk.gov.hmrc.crypto.{Decrypter, Encrypter}
+import uk.gov.hmrc.paymentsemailverification.crypto.Crypto
 
-class Module extends AbstractModule {
+import java.time.Clock
 
-  override def configure(): Unit = {
+class Module extends PlayModule {
 
-    bind(classOf[AppConfig]).asEagerSingleton()
-  }
+  override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[_]] =
+    Seq(
+      bind[Encrypter with Decrypter].to[Crypto],
+      bind[Clock].toInstance(Clock.systemUTC())
+    )
+
 }

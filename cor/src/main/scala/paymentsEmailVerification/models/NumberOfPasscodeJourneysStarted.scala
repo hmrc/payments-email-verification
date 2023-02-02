@@ -14,14 +14,22 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.paymentsemailverification.config
+package paymentsEmailVerification.models
 
-import com.google.inject.AbstractModule
+import play.api.libs.json.{Format, Json}
 
-class Module extends AbstractModule {
+final case class NumberOfPasscodeJourneysStarted(value: Int) extends AnyVal
 
-  override def configure(): Unit = {
+object NumberOfPasscodeJourneysStarted {
 
-    bind(classOf[AppConfig]).asEagerSingleton()
+  val zero: NumberOfPasscodeJourneysStarted = NumberOfPasscodeJourneysStarted(0)
+
+  implicit class NumberOfBarsVerifyAttemptsOps(private val n: NumberOfPasscodeJourneysStarted) {
+
+    def increment: NumberOfPasscodeJourneysStarted = NumberOfPasscodeJourneysStarted(n.value + 1)
+
   }
+
+  implicit val format: Format[NumberOfPasscodeJourneysStarted] = Json.valueFormat
+
 }

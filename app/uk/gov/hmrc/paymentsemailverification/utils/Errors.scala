@@ -14,14 +14,23 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.paymentsemailverification.config
+package uk.gov.hmrc.paymentsemailverification.utils
 
-import com.google.inject.AbstractModule
+import uk.gov.hmrc.http.UpstreamErrorResponse
 
-class Module extends AbstractModule {
+/**
+ * Exceptions thrown by below util are expected exceptions maintained by our ErrorHandler
+ */
+object Errors {
 
-  override def configure(): Unit = {
+  @inline def throwNotFoundException(message: => String): Nothing = throw UpstreamErrorResponse(
+    message,
+    play.mvc.Http.Status.NOT_FOUND
+  )
 
-    bind(classOf[AppConfig]).asEagerSingleton()
-  }
+  @inline def throwServerErrorException(message: => String): Nothing = throw UpstreamErrorResponse(
+    message,
+    play.mvc.Http.Status.INTERNAL_SERVER_ERROR
+  )
+
 }

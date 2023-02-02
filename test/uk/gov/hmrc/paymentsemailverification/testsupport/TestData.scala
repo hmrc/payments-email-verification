@@ -14,14 +14,25 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.paymentsemailverification.config
+package uk.gov.hmrc.paymentsemailverification.testsupport
 
-import com.google.inject.AbstractModule
+import uk.gov.hmrc.crypto.Sensitive.SensitiveString
+import uk.gov.hmrc.crypto.{Encrypter, PlainText}
+import uk.gov.hmrc.paymentsemailverification.models.GGCredId
 
-class Module extends AbstractModule {
+import java.time.Instant
 
-  override def configure(): Unit = {
+object TestData {
 
-    bind(classOf[AppConfig]).asEagerSingleton()
-  }
+  def encryptString(s: String, encrypter: Encrypter): String =
+    encrypter.encrypt(
+      PlainText("\"" + SensitiveString(s).decryptedValue + "\"")
+    ).value
+
+  val ggCredId: GGCredId = GGCredId("cred-123")
+
+  val authToken = "authorization-value"
+
+  val frozenInstant = Instant.parse("2057-11-02T16:28:55.185Z")
+
 }

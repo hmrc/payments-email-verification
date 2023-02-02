@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.paymentsemailverification.config
+package uk.gov.hmrc.paymentsemailverification.testsupport
 
-import com.google.inject.AbstractModule
+import org.scalatest.freespec.AnyFreeSpecLike
 
-class Module extends AbstractModule {
-
-  override def configure(): Unit = {
-
-    bind(classOf[AppConfig]).asEagerSingleton()
-  }
-}
+/**
+ * This is common spec for every test case which brings all of useful routines we want to use in our scenarios.
+ */
+trait UnitSpec
+  extends AnyFreeSpecLike
+  with RichMatchers
