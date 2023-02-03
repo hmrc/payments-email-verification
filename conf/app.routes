@@ -1,3 +1,5 @@
 # microservice specific routes
 
-GET        /hello-world             uk.gov.hmrc.paymentsemailverification.controllers.MicroserviceHelloWorldController.hello
+POST  /start                  uk.gov.hmrc.paymentsemailverification.controllers.EmailVerificationController.startEmailVerificationJourney
+POST  /status                 uk.gov.hmrc.paymentsemailverification.controllers.EmailVerificationController.getEmailVerificationResult
+GET   /earliest-created-at    uk.gov.hmrc.paymentsemailverification.controllers.EmailVerificationController.getEarliestCreatedAt

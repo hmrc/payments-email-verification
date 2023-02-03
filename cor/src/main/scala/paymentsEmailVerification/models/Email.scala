@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.paymentsemailverification.config
+package paymentsEmailVerification.models
 
-import com.google.inject.AbstractModule
+import play.api.libs.json.{Format, Json}
 
-class Module extends AbstractModule {
+final case class Email(value: String) extends AnyVal
 
-  override def configure(): Unit = {
+object Email {
 
-    bind(classOf[AppConfig]).asEagerSingleton()
-  }
+  implicit val format: Format[Email] = Json.valueFormat
+
 }

@@ -14,14 +14,21 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.paymentsemailverification.config
+package uk.gov.hmrc.paymentsemailverification.services
 
-import com.google.inject.AbstractModule
+import uk.gov.hmrc.paymentsemailverification.testsupport.UnitSpec
 
-class Module extends AbstractModule {
+class CorrelationIdGeneratorSpec extends UnitSpec {
 
-  override def configure(): Unit = {
+  val generator = new CorrelationIdGenerator()
 
-    bind(classOf[AppConfig]).asEagerSingleton()
+  "CorrelationIdGenerator" - {
+
+    "must generate unique id's" in {
+      val ids = List.fill(1000000)(generator.nextCorrelationId())
+      ids.distinct.size shouldBe ids.size
+    }
+
   }
+
 }

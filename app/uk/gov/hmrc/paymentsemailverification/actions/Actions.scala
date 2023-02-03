@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.paymentsemailverification.config
+package uk.gov.hmrc.paymentsemailverification.actions
 
-import com.google.inject.AbstractModule
+import com.google.inject.{Inject, Singleton}
+import play.api.mvc.{ActionBuilder, AnyContent, DefaultActionBuilder}
 
-class Module extends AbstractModule {
+@Singleton
+class Actions @Inject() (
+    actionBuilder:              DefaultActionBuilder,
+    authenticatedActionRefiner: AuthenticatedActionRefiner
+) {
 
-  override def configure(): Unit = {
+  @SuppressWarnings(Array("org.wartremover.warts.Any"))
+  val authenticatedAction: ActionBuilder[AuthenticatedRequest, AnyContent] =
+    actionBuilder.andThen(authenticatedActionRefiner)
 
-    bind(classOf[AppConfig]).asEagerSingleton()
-  }
 }

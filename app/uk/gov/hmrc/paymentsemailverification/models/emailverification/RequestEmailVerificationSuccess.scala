@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.paymentsemailverification.config
+package uk.gov.hmrc.paymentsemailverification.models.emailverification
 
-import com.google.inject.AbstractModule
+import play.api.libs.json.{Json, Reads}
 
-class Module extends AbstractModule {
+final case class RequestEmailVerificationSuccess(redirectUri: String)
 
-  override def configure(): Unit = {
+object RequestEmailVerificationSuccess {
 
-    bind(classOf[AppConfig]).asEagerSingleton()
-  }
+  implicit val reads: Reads[RequestEmailVerificationSuccess] = Json.reads
 }

@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.paymentsemailverification.config
+package paymentsEmailVerification.models.api
 
-import com.google.inject.AbstractModule
+import play.api.libs.json.{Json, OFormat}
 
-class Module extends AbstractModule {
+import java.time.LocalDateTime
 
-  override def configure(): Unit = {
+final case class GetEarliestCreatedAtTimeResponse(
+    earliestCreatedAtTime: Option[LocalDateTime]
+)
 
-    bind(classOf[AppConfig]).asEagerSingleton()
-  }
+object GetEarliestCreatedAtTimeResponse {
+
+  implicit val format: OFormat[GetEarliestCreatedAtTimeResponse] = Json.format
+
 }
