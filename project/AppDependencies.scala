@@ -22,8 +22,7 @@ object AppDependencies {
       // format: OFF
       "uk.gov.hmrc"          %% s"bootstrap-backend$playVersion"    % bootstrapVersion,
       "uk.gov.hmrc"          %% "json-encryption"                   % hmrcJsonEncryptionVersion,
-      "uk.gov.hmrc"          %% s"crypto-json$playVersion"          % AppDependencies.cryptoVersion,
-      "uk.gov.hmrc"          %% "crypto"                            % AppDependencies.cryptoVersion
+      "uk.gov.hmrc"          %% s"crypto-json$playVersion"          % AppDependencies.cryptoVersion
     // format: ON
     )
 
