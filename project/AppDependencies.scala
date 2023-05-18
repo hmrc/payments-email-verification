@@ -8,7 +8,7 @@ object AppDependencies {
   private val playVersion = s"-play-28"
 
   private val bootstrapVersion = "7.15.0"
-  private val hmrcMongoVersion = "1.1.0"
+  private val hmrcMongoVersion = "1.2.0"
   private val enumeratumVersion = "1.7.0"
   private val catsVersion = "2.9.0"
   private val cryptoVersion = "7.3.0"
@@ -43,7 +43,7 @@ object AppDependencies {
     //run `essttp-backend/dependencyTree::toFile deps.txt -f` and look for that line:
     // +-uk.gov.hmrc:auth-client_2.12:3.0.0-play-27 (evicted by: 5.1.0-play-27)
     //the correct version in this time was `3.0.0`
-    "uk.gov.hmrc" %% "auth-client" % "6.0.0-play-28",
+    "uk.gov.hmrc" %% "auth-client" % "6.1.0-play-28",
     "uk.gov.hmrc" %% s"bootstrap-common$playVersion" % AppDependencies.bootstrapVersion % Provided,
     "uk.gov.hmrc.mongo" %% s"hmrc-mongo$playVersion" % AppDependencies.hmrcMongoVersion,
     "com.typesafe.play" %% "play" % play.core.PlayVersion.current % Provided,
