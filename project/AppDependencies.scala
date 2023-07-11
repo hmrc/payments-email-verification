@@ -7,8 +7,8 @@ object AppDependencies {
 
   private val playVersion = s"-play-28"
 
-  private val bootstrapVersion = "7.15.0"
-  private val hmrcMongoVersion = "1.2.0"
+  private val bootstrapVersion = "7.19.0"
+  private val hmrcMongoVersion = "1.3.0"
   private val enumeratumVersion = "1.7.0"
   private val catsVersion = "2.9.0"
   private val cryptoVersion = "7.3.0"
