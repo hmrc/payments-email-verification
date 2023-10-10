@@ -200,10 +200,10 @@ class EmailVerificationControllerSpec extends ItSpec {
 
       val emailVerificationStatus = await(emailVerificationStatusRepo.findAllEntries(TestData.ggCredId))
       emailVerificationStatus.size shouldBe 1
-      emailVerificationStatus(0)._id shouldBe id.value
-      emailVerificationStatus(0).email.value.decryptedValue shouldBe email.value
-      emailVerificationStatus(0).numberOfPasscodeJourneysStarted.value shouldBe 1
-      emailVerificationStatus(0).verificationResult shouldBe Some(EmailVerificationResult.Verified)
+      emailVerificationStatus.headOption.map(_._id) shouldBe Some(id.value)
+      emailVerificationStatus.headOption.map(_.email.value.decryptedValue) shouldBe Some(email.value)
+      emailVerificationStatus.headOption.map(_.numberOfPasscodeJourneysStarted.value) shouldBe Some(1)
+      emailVerificationStatus.headOption.flatMap(_.verificationResult) shouldBe Some(EmailVerificationResult.Verified)
 
       EmailVerificationStub.verifyNoneGetVerificationStatus(TestData.ggCredId)
     }
