@@ -29,12 +29,12 @@ lazy val scalaCompilerOptions = Seq(
 )
 
 lazy val commonSettings = Seq[SettingsDefinition](
-  majorVersion := 0,
+  majorVersion := 1,
   scalacOptions ++= scalaCompilerOptions,
-  update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
+  (update / evictionWarningOptions) := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
   shellPrompt := ShellPrompt(version.value),
   buildInfoPackage := name.value.toLowerCase().replaceAllLiterally("-", ""),
-  Compile / doc / scalacOptions := Seq(), //this will allow to have warnings in `doc` task and not fail the build
+  (Compile / doc / scalacOptions) := Seq(), //this will allow to have warnings in `doc` task and not fail the build
   scalaSettings,
   uk.gov.hmrc.DefaultBuildSettings.defaultSettings(),
   WartRemoverSettings.wartRemoverSettings,
@@ -45,7 +45,7 @@ lazy val commonSettings = Seq[SettingsDefinition](
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin, SbtAutoBuildPlugin, SbtGitVersioning)
-  .settings(commonSettings: _*)
+  .settings(commonSettings *)
   .settings(
     scalaVersion := appScalaVersion,
     libraryDependencies ++= AppDependencies.microserviceDependencies,
@@ -62,7 +62,7 @@ lazy val microservice = Project(appName, file("."))
  */
 lazy val cor = Project(appName + "-cor", file("cor"))
   .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning)
-  .settings(commonSettings: _*)
+  .settings(commonSettings *)
   .settings(
     scalaVersion := appScalaVersion,
     libraryDependencies ++= AppDependencies.corJourneyDependencies
