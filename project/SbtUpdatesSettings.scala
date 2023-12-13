@@ -10,6 +10,8 @@ object SbtUpdatesSettings {
     (Compile / compile) := ((Compile / compile) dependsOn dependencyUpdates).value,
     dependencyUpdatesFilter -= moduleFilter("org.scala-lang"),
     dependencyUpdatesFilter -= moduleFilter("org.playframework"),
+    dependencyUpdatesFilter -= moduleFilter("com.typesafe.play"),
+    dependencyUpdatesFilter -= moduleFilter("com.beachape", "enumeratum-play"),
     // locked to the version of play
     dependencyUpdatesFilter -= moduleFilter("org.julienrf", "play-json-derived-codecs")
   )
