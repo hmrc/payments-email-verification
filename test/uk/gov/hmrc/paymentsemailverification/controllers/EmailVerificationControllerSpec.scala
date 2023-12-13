@@ -40,7 +40,7 @@ class EmailVerificationControllerSpec extends ItSpec {
 
   val emailVerificationStatusRepo: EmailVerificationStatusRepo = app.injector.instanceOf[EmailVerificationStatusRepo]
 
-  implicit val hcWithAuthorisation = HeaderCarrier(authorization = Some(Authorization(TestData.authToken)))
+  implicit val hcWithAuthorisation: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(TestData.authToken)))
 
   "POST /email-verification/start" - {
 
@@ -365,7 +365,7 @@ class EmailVerificationNonLocalControllerSpec extends ItSpec {
 
   val connector = app.injector.instanceOf[PaymentsEmailVerificationConnector]
 
-  implicit val hcWithAuthorisation = HeaderCarrier(authorization = Some(Authorization(TestData.authToken)))
+  implicit val hcWithAuthorisation: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(TestData.authToken)))
 
   "POST /email-verification/start" - {
 
