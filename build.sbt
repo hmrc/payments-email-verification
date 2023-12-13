@@ -5,7 +5,7 @@ import wartremover.WartRemover.autoImport.wartremoverExcluded
 
 val appName: String = "payments-email-verification"
 
-val appScalaVersion = "2.13.10"
+ThisBuild / scalaVersion := "2.13.12"
 
 lazy val scalaCompilerOptions = Seq(
   "-Xfatal-warnings",
@@ -39,15 +39,13 @@ lazy val commonSettings = Seq[SettingsDefinition](
   uk.gov.hmrc.DefaultBuildSettings.defaultSettings(),
   WartRemoverSettings.wartRemoverSettings,
   ScoverageSettings.scoverageSettings,
-  SbtUpdatesSettings.sbtUpdatesSettings,
-  libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
+  SbtUpdatesSettings.sbtUpdatesSettings
 ) ++ ScalariformSettings.scalariformSettings
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin, SbtAutoBuildPlugin, SbtGitVersioning)
   .settings(commonSettings *)
   .settings(
-    scalaVersion := appScalaVersion,
     libraryDependencies ++= AppDependencies.microserviceDependencies,
     wartremoverExcluded ++= (Compile / routes).value
   )
@@ -64,6 +62,5 @@ lazy val cor = Project(appName + "-cor", file("cor"))
   .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning)
   .settings(commonSettings *)
   .settings(
-    scalaVersion := appScalaVersion,
-    libraryDependencies ++= AppDependencies.corJourneyDependencies
+    libraryDependencies ++= AppDependencies.corDependencies
   )

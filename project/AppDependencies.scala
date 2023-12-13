@@ -1,28 +1,23 @@
-import play.core.PlayVersion
-import play.sbt.PlayImport._
-import sbt.Keys.libraryDependencies
 import sbt._
 
 object AppDependencies {
 
-  private val playVersion = s"-play-28"
+  private val playVersion = s"-play-30"
 
-  private val bootstrapVersion = "8.0.0"
-  private val hmrcMongoVersion = "1.5.0"
-  private val enumeratumVersion = "1.7.0"
+  private val bootstrapVersion = "8.2.0"
+  private val hmrcMongoVersion = "1.6.0"
+  private val enumeratumPlayVersion = "1.8.0"
   private val catsVersion = "2.10.0"
   private val cryptoVersion = "7.6.0"
-  private val hmrcJsonEncryptionVersion = "5.2.0-play-28"
-  private val playJsonDerivedCodesVersion = "7.0.0"
-  private val chimneyVersion = "0.7.2"
+  private val playJsonDerivedCodesVersion = "10.1.0"
 
   lazy val microserviceDependencies: Seq[ModuleID] = {
 
     val compile = Seq(
       // format: OFF
       "uk.gov.hmrc"          %% s"bootstrap-backend$playVersion"    % bootstrapVersion,
-      "uk.gov.hmrc"          %% "json-encryption"                   % hmrcJsonEncryptionVersion,
-      "uk.gov.hmrc"          %% s"crypto-json$playVersion"          % AppDependencies.cryptoVersion
+      "uk.gov.hmrc"          %% s"crypto-json$playVersion"          % AppDependencies.cryptoVersion,
+      "uk.gov.hmrc.mongo"    %% s"hmrc-mongo$playVersion"           % AppDependencies.hmrcMongoVersion
     // format: ON
     )
 
@@ -36,20 +31,12 @@ object AppDependencies {
     compile ++ test
   }
 
-  lazy val corJourneyDependencies: Seq[ModuleID] = Seq(
+  lazy val corDependencies: Seq[ModuleID] = Seq(
     // format:: OFF
-    //WARN! - The version of `auth-client` has to be exact!
-    //make sure it's version is the same as version in bootstrap (`uk.gov.hmrc:bootstrap-backend-play-xx_x.xx:xxx`)
-    //run `essttp-backend/dependencyTree::toFile deps.txt -f` and look for that line:
-    // +-uk.gov.hmrc:auth-client_2.12:3.0.0-play-27 (evicted by: 5.1.0-play-27)
-    //the correct version in this time was `3.0.0`
-    "uk.gov.hmrc" %% "auth-client" % "7.1.0",
     "uk.gov.hmrc" %% s"bootstrap-common$playVersion" % AppDependencies.bootstrapVersion % Provided,
-    "uk.gov.hmrc.mongo" %% s"hmrc-mongo$playVersion" % AppDependencies.hmrcMongoVersion,
-    "com.typesafe.play" %% "play" % play.core.PlayVersion.current % Provided,
     "org.typelevel" %% "cats-core" % catsVersion,
-    "com.beachape" %% "enumeratum-play" % AppDependencies.enumeratumVersion,
-    "org.julienrf" %% "play-json-derived-codecs" % AppDependencies.playJsonDerivedCodesVersion //choose carefully
+    "com.beachape" %% "enumeratum-play" % AppDependencies.enumeratumPlayVersion,
+    "org.julienrf" %% "play-json-derived-codecs" % AppDependencies.playJsonDerivedCodesVersion
   // format: ON
   )
 }

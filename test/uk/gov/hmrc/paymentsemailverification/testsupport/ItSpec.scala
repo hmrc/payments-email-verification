@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.paymentsemailverification.testsupport
 
-import akka.util.Timeout
+import org.apache.pekko.util.Timeout
 import com.google.inject.{AbstractModule, Provides}
 import org.scalatest.freespec.AnyFreeSpecLike
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
