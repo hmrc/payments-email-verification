@@ -31,7 +31,7 @@ import uk.gov.hmrc.paymentsemailverification.testsupport.{ItSpec, TestData}
 
 import java.time.temporal.ChronoUnit
 import java.time.{LocalDateTime, ZoneOffset}
-import java.util.UUID
+import java.util.{Locale, UUID}
 import scala.concurrent.Future
 
 class EmailVerificationControllerSpec extends ItSpec {
@@ -178,7 +178,7 @@ class EmailVerificationControllerSpec extends ItSpec {
 
   }
 
-  "POST /email-verification/result" - {
+  "POST /email-verification/status" - {
 
     behave like authenticatedEndpointBehaviour(
       connector.getEmailVerificationResult(GetEmailVerificationResultRequest(Email("email")))(_)
@@ -293,6 +293,30 @@ class EmailVerificationControllerSpec extends ItSpec {
         )
       }
 
+    }
+    "is insensitive to email case" in {
+      val emailWithUpperCase = s"Email${UUID.randomUUID().toString}@Test.Com"
+      val emailCaseLowered = emailWithUpperCase.toLowerCase(Locale.UK)
+      val getResultRequest = GetEmailVerificationResultRequest(Email(emailWithUpperCase))
+      val id = correlationIdGenerator.readNextCorrelationId()
+
+      AuthStub.authorise()
+      EmailVerificationStub.getVerificationResult(
+        TestData.ggCredId,
+        Right(List(EmailResult(emailCaseLowered, verified = true, locked = false)))
+      )
+
+      val result = connector.getEmailVerificationResult(getResultRequest)
+      await(result) shouldBe EmailVerificationResult.Verified
+
+      val emailVerificationStatus = await(emailVerificationStatusRepo.findAllEntries(TestData.ggCredId))
+      emailVerificationStatus.size shouldBe 1
+      emailVerificationStatus.headOption.map(_._id) shouldBe Some(id.value)
+      emailVerificationStatus.headOption.map(_.email.value.decryptedValue) shouldBe Some(emailWithUpperCase)
+      emailVerificationStatus.headOption.map(_.numberOfPasscodeJourneysStarted.value) shouldBe Some(1)
+      emailVerificationStatus.headOption.flatMap(_.verificationResult) shouldBe Some(EmailVerificationResult.Verified)
+
+      EmailVerificationStub.verifyNoneGetVerificationStatus(TestData.ggCredId)
     }
 
   }
