@@ -32,6 +32,7 @@ import uk.gov.hmrc.paymentsemailverification.models.emailverification._
 import uk.gov.hmrc.paymentsemailverification.utils.Errors
 
 import java.net.URI
+import java.util.Locale
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -115,7 +116,7 @@ class EmailVerificationService @Inject() (
       ggCredId: GGCredId
   )(implicit hc: HeaderCarrier): Future[EmailVerificationResult] = {
     connector.getVerificationStatus(ggCredId).flatMap { statusResponse =>
-      statusResponse.emails.find(_.emailAddress === request.email.value) match {
+      statusResponse.emails.find(_.emailAddress.toLowerCase(Locale.UK) === request.email.value.toLowerCase(Locale.UK)) match {
         case None =>
           Errors.throwNotFoundException("Verification result not found for email address")
         case Some(status) =>
