@@ -56,7 +56,7 @@ object AppDependencies {
     }
     val playDependency = playVersion match {
       case PlayVersion.Play28 => "com.typesafe.play" %% "play" % "2.8.21"
-      case PlayVersion.Play30 => "org.playframework" %% "play" % "3.0.0"
+      case PlayVersion.Play30 => "org.playframework" %% "play" % "3.0.1"
     }
 
     Seq(
