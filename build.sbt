@@ -1,4 +1,3 @@
-import AppDependencies.PlayVersion
 import uk.gov.hmrc.DefaultBuildSettings.scalaSettings
 import uk.gov.hmrc.ShellPrompt
 import wartremover.WartRemover.autoImport.wartremoverExcluded
@@ -54,27 +53,18 @@ lazy val microservice = Project(appName, file("."))
   .settings(resolvers += Resolver.jcenterRepo)
   .disablePlugins(sbt.plugins.JUnitXmlReportPlugin)
   .dependsOn(cor30)
-  .aggregate(cor28, cor30)
+  .aggregate(cor30)
 
 
 /**
  * Collection Of Routines
  */
 
-lazy val cor28 = Project(appName + "-cor-play-28", file("cor/play-28"))
-  .disablePlugins(play.sbt.PlayScala)
-  .settings(commonSettings *)
-  .settings(
-    libraryDependencies ++= AppDependencies.corDependencies(PlayVersion.Play28),
-    corSharedSources
-  )
-
-
 lazy val cor30 = Project(appName + "-cor-play-30", file("cor/play-30"))
   .disablePlugins(play.sbt.PlayScala)
   .settings(commonSettings *)
   .settings(
-    libraryDependencies ++= AppDependencies.corDependencies(PlayVersion.Play30),
+    libraryDependencies ++= AppDependencies.corJourneyDependencies,
     corSharedSources
   )
 

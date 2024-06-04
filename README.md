@@ -22,9 +22,8 @@ and bring in `payments-email-verification-cor` as a library dependency to your s
 ```
 "uk.gov.hmrc" %% "payments-email-verification-cor" % <version>
 ```
-or for **v2.0.0 or later** choose one of the following based on whether your service is using Play 2.8 or Play 3.0
+or for **v2.0.0 or later** 
 ```
-"uk.gov.hmrc" %% "payments-email-verification-cor-play-28" % <version>
 "uk.gov.hmrc" %% "payments-email-verification-cor-play-30" % <version>
 ```
 
