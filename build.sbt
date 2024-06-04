@@ -44,7 +44,7 @@ lazy val commonSettings = Seq[SettingsDefinition](
 ) ++ ScalariformSettings.scalariformSettings
 
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin, SbtAutoBuildPlugin, SbtGitVersioning)
+  .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .settings(commonSettings *)
   .settings(
     libraryDependencies ++= AppDependencies.microserviceDependencies,
