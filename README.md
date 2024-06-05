@@ -19,10 +19,7 @@ microservices {
 } 
 ```
 and bring in `payments-email-verification-cor` as a library dependency to your service **before v2.0.0**
-```
-"uk.gov.hmrc" %% "payments-email-verification-cor" % <version>
-```
-or for **v2.0.0 or later** 
+
 ```
 "uk.gov.hmrc" %% "payments-email-verification-cor-play-30" % <version>
 ```
