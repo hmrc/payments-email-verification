@@ -1,23 +1,15 @@
-import sbt._
+import sbt.*
 
 object AppDependencies {
 
-  sealed trait PlayVersion
-
-  object PlayVersion {
-
-    case object Play28 extends PlayVersion
-    case object Play30 extends PlayVersion
-
-  }
-
   private val playVersion = s"-play-30"
 
-  private val bootstrapVersion = "8.5.0"
-  private val hmrcMongoVersion = "1.8.0"
+  private val bootstrapVersion = "8.6.0"
+  private val hmrcMongoVersion = "1.9.0"
   private val enumeratumPlayVersion = "1.8.0"
-  private val catsVersion = "2.10.0"
-  private val cryptoVersion = "7.6.0"
+  private val catsVersion = "2.12.0"
+  private val cryptoVersion = "8.0.0"
+  private val playJsonDerivedCodesVersion = "10.1.0"
 
   lazy val microserviceDependencies: Seq[ModuleID] = {
 
@@ -39,34 +31,13 @@ object AppDependencies {
     compile ++ test
   }
 
-  def corDependencies(playVersion: PlayVersion): Seq[ModuleID] = {
-    val playVersionSuffix = playVersion match {
-      case PlayVersion.Play28 => "-play-28"
-      case PlayVersion.Play30 => "-play-30"
-    }
-
-    val playJsonDerivedCodesVersion = playVersion match {
-      case PlayVersion.Play28 => "7.0.0"
-      case PlayVersion.Play30 => "10.1.0"
-    }
-
-    val enumeratumPlayVersion = playVersion match {
-      case PlayVersion.Play28 => "1.7.0"
-      case PlayVersion.Play30 => "1.8.0"
-    }
-    val playDependency = playVersion match {
-      case PlayVersion.Play28 => "com.typesafe.play" %% "play" % "2.8.21"
-      case PlayVersion.Play30 => "org.playframework" %% "play" % "3.0.1"
-    }
-
-    Seq(
-      // format:: OFF
-      playDependency % Provided,
-      "uk.gov.hmrc" %% s"bootstrap-common$playVersionSuffix" % AppDependencies.bootstrapVersion % Provided,
-      "org.typelevel" %% "cats-core" % catsVersion,
-      "com.beachape" %% "enumeratum-play" % enumeratumPlayVersion,
-      "org.julienrf" %% "play-json-derived-codecs" % playJsonDerivedCodesVersion
-    // format: ON
-    )
-  }
+  lazy val corJourneyDependencies: Seq[ModuleID] = Seq(
+    // format:: OFF
+    "uk.gov.hmrc" %% s"bootstrap-common$playVersion" % AppDependencies.bootstrapVersion % Provided,
+    "org.typelevel" %% "cats-core" % catsVersion,
+    "com.beachape" %% "enumeratum-play" % enumeratumPlayVersion,
+    "org.julienrf" %% "play-json-derived-codecs" % playJsonDerivedCodesVersion
+  // format: ON
+  )
 }
+
