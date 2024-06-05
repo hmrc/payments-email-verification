@@ -6,7 +6,7 @@ import wartremover.WartRemover.autoImport.wartremoverExcluded
 val appName: String = "payments-email-verification"
 
 ThisBuild / scalaVersion  := "2.13.12"
-ThisBuild / majorVersion  := 2
+ThisBuild / majorVersion  := 3
 
 lazy val scalaCompilerOptions = Seq(
   "-Xfatal-warnings",

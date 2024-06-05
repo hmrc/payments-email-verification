@@ -18,12 +18,19 @@ microservices {
    }
 } 
 ```
-and bring in `payments-email-verification-cor` as a library dependency to your service
-
+and bring in `payments-email-verification-cor` as a library dependency to your service **before v2.0.0**
+```
+"uk.gov.hmrc" %% "payments-email-verification-cor" % <version>
+```
+from **v2.0.0 but before v3.0.0** choose one of the following based on whether your service is using Play 2.8 or Play 3.0
+```
+"uk.gov.hmrc" %% "payments-email-verification-cor-play-28" % <version>
+"uk.gov.hmrc" %% "payments-email-verification-cor-play-30" % <version>
+```
+and from **v3.0.0 or later** only Play 3.0 is supported
 ```
 "uk.gov.hmrc" %% "payments-email-verification-cor-play-30" % <version>
 ```
-
 
 
 All endpoints are authenticated - a GG session must be present where the GG credentials can be retrieved.
