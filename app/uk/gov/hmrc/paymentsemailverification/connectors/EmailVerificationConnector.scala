@@ -17,8 +17,10 @@
 package uk.gov.hmrc.paymentsemailverification.connectors
 
 import com.google.inject.{Inject, Singleton}
+import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import uk.gov.hmrc.paymentsemailverification.config.AppConfig
 import uk.gov.hmrc.paymentsemailverification.models.GGCredId
 import uk.gov.hmrc.paymentsemailverification.models.emailverification.{EmailVerificationResultResponse, RequestEmailVerificationRequest}
@@ -26,7 +28,7 @@ import uk.gov.hmrc.paymentsemailverification.models.emailverification.{EmailVeri
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EmailVerificationConnector @Inject() (appConfig: AppConfig, httpClient: HttpClient)(implicit ec: ExecutionContext) {
+class EmailVerificationConnector @Inject() (appConfig: AppConfig, httpClient: HttpClientV2)(implicit ec: ExecutionContext) {
 
   private val requestVerificationUrl: String = appConfig.emailVerificationUrl + "/email-verification/verify-email"
 
@@ -34,9 +36,9 @@ class EmailVerificationConnector @Inject() (appConfig: AppConfig, httpClient: Ht
     appConfig.emailVerificationUrl + s"/email-verification/verification-status/${ggCredId.value}"
 
   def requestEmailVerification(emailVerificationRequest: RequestEmailVerificationRequest)(implicit hc: HeaderCarrier): Future[HttpResponse] =
-    httpClient.POST[RequestEmailVerificationRequest, HttpResponse](requestVerificationUrl, emailVerificationRequest)
+    httpClient.post(url"$requestVerificationUrl").withBody(Json.toJson(emailVerificationRequest)).execute[HttpResponse]
 
   def getVerificationStatus(ggCredId: GGCredId)(implicit hc: HeaderCarrier): Future[EmailVerificationResultResponse] =
-    httpClient.GET[EmailVerificationResultResponse](getVerificationStatusUrl(ggCredId))
+    httpClient.get(url"${getVerificationStatusUrl(ggCredId)}").execute[EmailVerificationResultResponse]
 
 }
