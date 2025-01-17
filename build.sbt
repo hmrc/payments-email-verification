@@ -5,27 +5,16 @@ import wartremover.WartRemover.autoImport.wartremoverExcluded
 
 val appName: String = "payments-email-verification"
 
-ThisBuild / scalaVersion  := "2.13.12"
+ThisBuild / scalaVersion  := "3.3.4"
 ThisBuild / majorVersion  := 3
 
 lazy val scalaCompilerOptions = Seq(
   "-Xfatal-warnings",
-  "-Xlint:-missing-interpolator,_",
-  "-Xlint:adapted-args",
-  "-Xlint:-byname-implicit",
-  "-Ywarn-unused:implicits",
-  "-Ywarn-unused:imports",
-  "-Ywarn-unused:locals",
-  "-Ywarn-unused:params",
-  "-Ywarn-unused:patvars",
-  "-Ywarn-unused:privates",
-  "-Ywarn-value-discard",
-  "-Ywarn-dead-code",
   "-deprecation",
   "-feature",
   "-unchecked",
   "-language:implicitConversions",
-  "-Wconf:cat=unused-imports&src=html/.*:s",
+  "-Wconf:msg=unused-imports&src=html/.*:s",
   "-Wconf:src=routes/.*:s"
 )
 
@@ -40,7 +29,7 @@ lazy val commonSettings = Seq[SettingsDefinition](
   WartRemoverSettings.wartRemoverSettings,
   ScoverageSettings.scoverageSettings,
   SbtUpdatesSettings.sbtUpdatesSettings
-) ++ ScalariformSettings.scalariformSettings
+)
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)

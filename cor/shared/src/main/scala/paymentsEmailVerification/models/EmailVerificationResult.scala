@@ -18,8 +18,7 @@ package paymentsEmailVerification.models
 
 import cats.Eq
 import enumeratum.{Enum, EnumEntry}
-import julienrf.json.derived
-import play.api.libs.json.OFormat
+import play.api.libs.json.{Format, Json}
 
 import scala.collection.immutable
 
@@ -30,11 +29,17 @@ object EmailVerificationResult extends Enum[EmailVerificationResult] {
   implicit val eq: Eq[EmailVerificationResult] = Eq.fromUniversalEquals
 
   @SuppressWarnings(Array("org.wartremover.warts.Any"))
-  implicit val format: OFormat[EmailVerificationResult] = derived.oformat[EmailVerificationResult]()
+  implicit val format: Format[EmailVerificationResult] = Json.format[EmailVerificationResult]
 
-  case object Verified extends EmailVerificationResult
+  final case class Verified() extends EmailVerificationResult
 
-  case object Locked extends EmailVerificationResult
+  @SuppressWarnings(Array("org.wartremover.warts.Any"))
+  implicit val verifiedFormat: Format[Verified] = Json.format[Verified]
+
+  final case class Locked() extends EmailVerificationResult
+
+  @SuppressWarnings(Array("org.wartremover.warts.Any"))
+  implicit val lockedFormat: Format[Locked] = Json.format[Locked]
 
   override val values: immutable.IndexedSeq[EmailVerificationResult] = findValues
 

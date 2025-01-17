@@ -31,7 +31,7 @@ class EmailVerificationStatusService @Inject() (
     emailVerificationStatusRepo: EmailVerificationStatusRepo,
     correlationIdGenerator:      CorrelationIdGenerator,
     clock:                       Clock
-)(implicit ec: ExecutionContext) {
+)(using ExecutionContext) {
 
   /*
    * return list of EmailVerificationStatus associated with given credId
@@ -39,10 +39,10 @@ class EmailVerificationStatusService @Inject() (
   def findEmailVerificationStatuses(ggCredId: GGCredId): Future[List[EmailVerificationStatus]] =
     find(ggCredId)
 
-  implicit val localDateTimeOrdering: Ordering[LocalDateTime] = _ compareTo _
+  given Ordering[LocalDateTime] = _ compareTo _
 
   def findEarliestCreatedAt(ggCredId: GGCredId): Future[GetEarliestCreatedAtTimeResponse] = {
-    find(ggCredId).map { statuses: List[EmailVerificationStatus] =>
+    find(ggCredId).map { (statuses: List[EmailVerificationStatus]) =>
       val result = statuses
         .map(status => LocalDateTime.ofInstant(status.createdAt, ZoneOffset.UTC))
         .minOption

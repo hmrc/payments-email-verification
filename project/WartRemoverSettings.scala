@@ -1,5 +1,5 @@
-import sbt.Keys._
-import sbt._
+import sbt.Keys.*
+import sbt.*
 import wartremover.Wart
 import wartremover.WartRemover.autoImport.{Warts, wartremoverErrors, wartremoverExcluded}
 

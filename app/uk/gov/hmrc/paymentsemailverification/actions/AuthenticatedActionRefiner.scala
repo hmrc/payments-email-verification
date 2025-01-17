@@ -34,10 +34,8 @@ final case class AuthenticatedRequest[A](val request: Request[A], ggCredId: GGCr
 class AuthenticatedActionRefiner @Inject() (
     val authConnector: AuthConnector,
     cc:                MessagesControllerComponents
-)(
-    implicit
-    ec: ExecutionContext
-) extends ActionRefiner[Request, AuthenticatedRequest] with BackendHeaderCarrierProvider with AuthorisedFunctions {
+)(using ExecutionContext)
+  extends ActionRefiner[Request, AuthenticatedRequest], BackendHeaderCarrierProvider, AuthorisedFunctions {
 
   private val logger = Logger(getClass)
 
@@ -48,7 +46,7 @@ class AuthenticatedActionRefiner @Inject() (
 
       case Some(ggCreds) =>
         Future.successful(Right(AuthenticatedRequest(request, GGCredId(ggCreds.providerId))))
-    }(hc(request), ec).recover {
+    }(hc(request)).recover {
       case _: NoActiveSession =>
         Left(Unauthorized)
 

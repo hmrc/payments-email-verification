@@ -1,7 +1,7 @@
 import com.timushev.sbt.updates.UpdatesKeys.dependencyUpdates
 import com.timushev.sbt.updates.UpdatesPlugin.autoImport.{dependencyUpdatesFailBuild, dependencyUpdatesFilter, moduleFilterRemoveValue}
-import sbt.Keys._
-import sbt._
+import sbt.Keys.*
+import sbt.*
 
 object SbtUpdatesSettings {
 
@@ -11,9 +11,7 @@ object SbtUpdatesSettings {
     dependencyUpdatesFilter -= moduleFilter("org.scala-lang"),
     dependencyUpdatesFilter -= moduleFilter("org.playframework"),
     dependencyUpdatesFilter -= moduleFilter("com.typesafe.play"),
-    dependencyUpdatesFilter -= moduleFilter("com.beachape", "enumeratum-play"),
-    // locked to the version of play
-    dependencyUpdatesFilter -= moduleFilter("org.julienrf", "play-json-derived-codecs")
+    dependencyUpdatesFilter -= moduleFilter("com.beachape", "enumeratum-play")
   )
 
 }

@@ -22,6 +22,7 @@ import org.scalatest.freespec.AnyFreeSpecLike
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.test.Helpers.await
+import org.mongodb.scala.SingleObservableFuture
 import play.api.test.{DefaultTestServerFactory, RunningServer}
 import play.api.{Application, Mode}
 import play.core.server.ServerConfig
@@ -35,14 +36,13 @@ import java.time.{Clock, ZoneId}
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Singleton
-import scala.annotation.nowarn
 import scala.concurrent.duration._
 
 trait ItSpec
-  extends AnyFreeSpecLike
-  with RichMatchers
-  with GuiceOneServerPerSuite
-  with WireMockSupport { self =>
+  extends AnyFreeSpecLike,
+    RichMatchers,
+    GuiceOneServerPerSuite,
+    WireMockSupport { self =>
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -62,23 +62,19 @@ trait ItSpec
 
     @Provides
     @Singleton
-    @nowarn // silence "method never used" warning
     def clock: Clock = frozenClock
 
     @Provides
     @Singleton
-    @nowarn // silence "method never used" warning
     def operationalCryptoFormat: OperationalCryptoFormat = OperationalCryptoFormat(testCrypto)
 
     @Provides
     @Singleton
-    @nowarn // silence "method never used" warning
     def testCorrelationIdGenerator(testCorrelationIdGenerator: TestCorrelationIdGenerator): CorrelationIdGenerator =
       testCorrelationIdGenerator
 
     @Provides
     @Singleton
-    @nowarn // silence "method never used" warning
     def testCorrelationIdGenerator(): TestCorrelationIdGenerator = {
       val randomPart: String = UUID.randomUUID().toString.take(8)
       val correlationIdPrefix: TestCorrelationIdPrefix = TestCorrelationIdPrefix(s"$randomPart-843f-4988-89c6-d4d3e2e91e26")
@@ -117,7 +113,7 @@ trait ItSpec
     }
   }
 
-  override implicit protected lazy val runningServer: RunningServer =
+  given RunningServer =
     TestServerFactory.start(app)
 
 }

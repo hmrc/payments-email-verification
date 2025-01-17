@@ -39,10 +39,10 @@ object RequestEmailVerificationRequest {
 
   object EmailDetails {
 
-    implicit val writes: OWrites[EmailDetails] = Json.writes
+    given OWrites[EmailDetails] = Json.writes
 
   }
 
-  implicit val writes: OWrites[RequestEmailVerificationRequest] = Json.writes
+  given OWrites[RequestEmailVerificationRequest] = Json.writes
 
 }

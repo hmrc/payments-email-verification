@@ -16,10 +16,12 @@
 
 package uk.gov.hmrc.paymentsemailverification.repositories
 
+import com.google.inject.Inject
 import org.mongodb.scala.bson.BsonDocument
 import org.mongodb.scala.model._
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.Codecs
+import org.mongodb.scala.ObservableFuture
 import uk.gov.hmrc.paymentsemailverification.config.AppConfig
 import uk.gov.hmrc.paymentsemailverification.crypto.CryptoFormat.OperationalCryptoFormat
 import uk.gov.hmrc.paymentsemailverification.models.{CorrelationId, EmailVerificationStatus, GGCredId}
@@ -27,14 +29,12 @@ import uk.gov.hmrc.paymentsemailverification.repositories.Repo.{Id, IdExtractor}
 import uk.gov.hmrc.paymentsemailverification.repositories.EmailVerificationStatusRepo._
 
 import java.util.concurrent.TimeUnit
-import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
-@Singleton
 final class EmailVerificationStatusRepo @Inject() (
     mongoComponent: MongoComponent,
     config:         AppConfig
-)(implicit ec: ExecutionContext, cryptoFormat: OperationalCryptoFormat)
+)(using ExecutionContext, OperationalCryptoFormat)
   extends Repo[CorrelationId, EmailVerificationStatus](
     collectionName = "emailVerificationStatus",
     mongoComponent = mongoComponent,
