@@ -113,7 +113,7 @@ trait ItSpec
     }
   }
 
-  given RunningServer =
+  override given runningServer: RunningServer =
     TestServerFactory.start(app)
 
 }
