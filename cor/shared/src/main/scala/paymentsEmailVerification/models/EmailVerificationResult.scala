@@ -31,15 +31,15 @@ object EmailVerificationResult extends Enum[EmailVerificationResult] {
   @SuppressWarnings(Array("org.wartremover.warts.Any"))
   implicit val format: Format[EmailVerificationResult] = Json.format[EmailVerificationResult]
 
-  final case class Verified() extends EmailVerificationResult
+  case object Verified extends EmailVerificationResult
 
   @SuppressWarnings(Array("org.wartremover.warts.Any"))
-  implicit val verifiedFormat: Format[Verified] = Json.format[Verified]
+  implicit val verifiedFormat: Format[Verified.type] = Json.format[Verified.type]
 
-  final case class Locked() extends EmailVerificationResult
+  case object Locked extends EmailVerificationResult
 
   @SuppressWarnings(Array("org.wartremover.warts.Any"))
-  implicit val lockedFormat: Format[Locked] = Json.format[Locked]
+  implicit val lockedFormat: Format[Locked.type] = Json.format[Locked.type]
 
   override val values: immutable.IndexedSeq[EmailVerificationResult] = findValues
 

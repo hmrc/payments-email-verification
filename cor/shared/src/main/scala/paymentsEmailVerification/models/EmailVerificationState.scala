@@ -17,7 +17,6 @@
 package paymentsEmailVerification.models
 
 import enumeratum.{Enum, EnumEntry}
-import paymentsEmailVerification.models.EmailVerificationState.OkToBeVerified
 import play.api.libs.json.{Format, Json, OFormat}
 
 import scala.collection.immutable
@@ -34,30 +33,30 @@ object EmailVerificationState extends Enum[EmailVerificationState] {
   @SuppressWarnings(Array("org.wartremover.warts.Any"))
   given Format[EmailVerificationStateError] = Json.format[EmailVerificationStateError]
 
-  final case class OkToBeVerified() extends EmailVerificationState
+  case object OkToBeVerified extends EmailVerificationState
 
   @SuppressWarnings(Array("org.wartremover.warts.Any"))
-  given Format[OkToBeVerified] = Json.format[OkToBeVerified]
+  given Format[OkToBeVerified.type] = Json.format[OkToBeVerified.type]
 
-  final case class AlreadyVerified() extends EmailVerificationStateError
-
-  @SuppressWarnings(Array("org.wartremover.warts.Any"))
-  given Format[AlreadyVerified] = Json.format[AlreadyVerified]
-
-  final case class TooManyPasscodeAttempts() extends EmailVerificationStateError
+  case object AlreadyVerified extends EmailVerificationStateError
 
   @SuppressWarnings(Array("org.wartremover.warts.Any"))
-  given Format[TooManyPasscodeAttempts] = Json.format[TooManyPasscodeAttempts]
+  given Format[AlreadyVerified.type] = Json.format[AlreadyVerified.type]
 
-  final case class TooManyPasscodeJourneysStarted() extends EmailVerificationStateError
-
-  @SuppressWarnings(Array("org.wartremover.warts.Any"))
-  given Format[TooManyPasscodeJourneysStarted] = Json.format[TooManyPasscodeJourneysStarted]
-
-  final case class TooManyDifferentEmailAddresses() extends EmailVerificationStateError
+  case object TooManyPasscodeAttempts extends EmailVerificationStateError
 
   @SuppressWarnings(Array("org.wartremover.warts.Any"))
-  given Format[TooManyDifferentEmailAddresses] = Json.format[TooManyDifferentEmailAddresses]
+  given Format[TooManyPasscodeAttempts.type] = Json.format[TooManyPasscodeAttempts.type]
+
+  case object TooManyPasscodeJourneysStarted extends EmailVerificationStateError
+
+  @SuppressWarnings(Array("org.wartremover.warts.Any"))
+  given Format[TooManyPasscodeJourneysStarted.type] = Json.format[TooManyPasscodeJourneysStarted.type]
+
+  case object TooManyDifferentEmailAddresses extends EmailVerificationStateError
+
+  @SuppressWarnings(Array("org.wartremover.warts.Any"))
+  given Format[TooManyDifferentEmailAddresses.type] = Json.format[TooManyDifferentEmailAddresses.type]
 
   override val values: immutable.IndexedSeq[EmailVerificationState] = findValues
 
