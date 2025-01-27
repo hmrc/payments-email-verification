@@ -16,27 +16,19 @@
 
 package uk.gov.hmrc.paymentsemailverification.models
 
+import paymentsEmailVerification.models.EmailVerificationResult
 import play.api.libs.json.Json
-import paymentsEmailVerification.models.EmailVerificationResult.Verified
-
 import uk.gov.hmrc.paymentsemailverification.testsupport.UnitSpec
 
 class EmailVerificationResultSpec extends UnitSpec {
 
   val resultJson = Json.parse("""{}""")
 
-  val model = Verified
-
+  val model = EmailVerificationResult.Verified
 
   "model should parse to json" in {
 
-
-    println(Json.toJson(model).toString+"yo")
-
     Json.toJson(model) shouldBe resultJson
   }
-
-
-
 
 }
