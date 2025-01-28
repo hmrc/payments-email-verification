@@ -6,6 +6,7 @@ import wartremover.WartRemover.autoImport.wartremoverExcluded
 val appName: String = "payments-email-verification"
 
 ThisBuild / scalaVersion  := "3.3.4"
+ThisBuild / crossScalaVersions := Seq("3.3.4", "2.13.12")
 ThisBuild / majorVersion  := 3
 
 lazy val scalaCompilerOptions = Seq(
@@ -53,7 +54,10 @@ lazy val cor30 = Project(appName + "-cor-play-30", file("cor/play-30"))
   .disablePlugins(play.sbt.PlayScala)
   .settings(commonSettings *)
   .settings(
-    libraryDependencies ++= AppDependencies.corJourneyDependencies,
+    libraryDependencies ++= AppDependencies.corJourneyDependencies ++ (CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, 13)) => Seq("org.julienrf" %% "play-json-derived-codecs" % "10.1.0")
+      case _ => Seq.empty
+    }),
     corSharedSources
   )
 

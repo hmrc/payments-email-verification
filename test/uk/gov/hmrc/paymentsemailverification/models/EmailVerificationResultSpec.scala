@@ -22,7 +22,10 @@ import uk.gov.hmrc.paymentsemailverification.testsupport.UnitSpec
 
 class EmailVerificationResultSpec extends UnitSpec {
 
-  val resultJson = Json.parse("""{}""")
+  val resultJson = Json.parse(
+    """{
+      | "Verified": {}
+      |}""".stripMargin)
 
   val model = EmailVerificationResult.Verified
 

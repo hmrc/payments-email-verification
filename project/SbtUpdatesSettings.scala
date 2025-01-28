@@ -11,7 +11,8 @@ object SbtUpdatesSettings {
     dependencyUpdatesFilter -= moduleFilter("org.scala-lang"),
     dependencyUpdatesFilter -= moduleFilter("org.playframework"),
     dependencyUpdatesFilter -= moduleFilter("com.typesafe.play"),
-    dependencyUpdatesFilter -= moduleFilter("com.beachape", "enumeratum-play")
+    dependencyUpdatesFilter -= moduleFilter("com.beachape", "enumeratum-play"),
+    dependencyUpdatesFilter -= moduleFilter("org.julienrf", "play-json-derived-codecs")
   )
 
 }
