@@ -4,10 +4,10 @@ object AppDependencies {
 
   private val playVersion = s"-play-30"
 
-  private val bootstrapVersion = "9.5.0"
-  private val hmrcMongoVersion = "2.3.0"
+  private val bootstrapVersion = "9.7.0"
+  private val hmrcMongoVersion = "2.4.0"
   private val enumeratumPlayVersion = "1.8.0"
-  private val catsVersion = "2.12.0"
+  private val catsVersion = "2.13.0"
   private val cryptoVersion = "8.1.0"
   private val playJsonDerivedCodesVersion = "10.1.0"
 
@@ -17,7 +17,8 @@ object AppDependencies {
       // format: OFF
       "uk.gov.hmrc"          %% s"bootstrap-backend$playVersion"    % bootstrapVersion,
       "uk.gov.hmrc"          %% s"crypto-json$playVersion"          % AppDependencies.cryptoVersion,
-      "uk.gov.hmrc.mongo"    %% s"hmrc-mongo$playVersion"           % AppDependencies.hmrcMongoVersion
+      "uk.gov.hmrc.mongo"    %% s"hmrc-mongo$playVersion"           % AppDependencies.hmrcMongoVersion,
+      "dev.zio"              %% "zio-json"                          % "0.7.13"
     // format: ON
     )
 
