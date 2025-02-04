@@ -35,8 +35,9 @@ object AppDependencies {
     // format:: OFF
     "uk.gov.hmrc"   %% s"bootstrap-common$playVersion"   % AppDependencies.bootstrapVersion % Provided,
     "org.typelevel" %% "cats-core"                       % catsVersion,
-    "com.beachape"  %% "enumeratum-play"                 % enumeratumPlayVersion
-  // format: ON
+    "com.beachape"  %% "enumeratum-play"                 % enumeratumPlayVersion,
+    "dev.zio"       %% "zio-json"                        % "0.7.14"
+    // format: ON
   )
 }
 

@@ -27,7 +27,7 @@ class EmailVerificationResultSpec extends UnitSpec {
       | "Verified": {}
       |}""".stripMargin)
 
-  val model = EmailVerificationResult.Verified
+  val model: EmailVerificationResult = EmailVerificationResult.Verified
 
   "model should parse to json" in {
 
