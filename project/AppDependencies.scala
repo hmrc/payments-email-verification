@@ -9,7 +9,6 @@ object AppDependencies {
   private val enumeratumPlayVersion = "1.8.2"
   private val catsVersion = "2.13.0"
   private val cryptoVersion = "8.1.0"
-  private val playJsonDerivedCodecsVersion = "11.0.0"
 
   lazy val microserviceDependencies: Seq[ModuleID] = {
 

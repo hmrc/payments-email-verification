@@ -60,14 +60,6 @@ class EmailVerificationResultSpec extends UnitSpec {
       JsNumber(123).validate[EmailVerificationResult].isError shouldBe true
       JsObject(Seq.empty).validate[EmailVerificationResult].isError shouldBe true
     }
-
-    "handle empty JsObject for case objects" in {
-      val verifiedEmptyObjectSerializedJson = JsObject(Map("Verified" -> JsObject.empty))
-      verifiedEmptyObjectSerializedJson.validate[EmailVerificationResult] shouldBe JsSuccess(modelVerified)
-
-      val lockedEmptyObjectSerializedJson = JsObject(Map("Locked" -> JsObject.empty))
-      lockedEmptyObjectSerializedJson.validate[EmailVerificationResult] shouldBe JsSuccess(modelLocked)
-    }
   }
-  
+
 }
