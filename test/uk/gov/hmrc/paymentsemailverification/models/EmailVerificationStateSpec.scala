@@ -35,7 +35,7 @@ class EmailVerificationStateSpec extends UnitSpec {
   val tooManyDifferentEmailAddresses: EmailVerificationStateError = EmailVerificationState.TooManyDifferentEmailAddresses
 
   "EmailVerificationState JSON serialization and deserialization" - {
-    
+
     "serialize each case object to the correct JSON" in {
       Json.toJson(okToBeVerified) shouldBe okToBeVerifiedJson
       Json.toJson(alreadyVerified) shouldBe alreadyVerifiedJson
@@ -43,7 +43,7 @@ class EmailVerificationStateSpec extends UnitSpec {
       Json.toJson(tooManyPasscodeJourneysStarted) shouldBe tooManyPasscodeJourneysStartedJson
       Json.toJson(tooManyDifferentEmailAddresses) shouldBe tooManyDifferentEmailAddressesJson
     }
-    
+
     "deserialize from valid JSON to the correct case object" in {
       okToBeVerifiedJson.validate[EmailVerificationState] shouldBe JsSuccess(okToBeVerified)
       alreadyVerifiedJson.validate[EmailVerificationStateError] shouldBe JsSuccess(alreadyVerified)
@@ -51,7 +51,7 @@ class EmailVerificationStateSpec extends UnitSpec {
       tooManyPasscodeJourneysStartedJson.validate[EmailVerificationStateError] shouldBe JsSuccess(tooManyPasscodeJourneysStarted)
       tooManyDifferentEmailAddressesJson.validate[EmailVerificationStateError] shouldBe JsSuccess(tooManyDifferentEmailAddresses)
     }
-    
+
     "perform serialization and deserialization" in {
       val serializedOkJson = Json.toJson(okToBeVerified)
       serializedOkJson.validate[EmailVerificationState] shouldBe JsSuccess(okToBeVerified)
@@ -68,12 +68,12 @@ class EmailVerificationStateSpec extends UnitSpec {
       val serializedTooManyDifferentEmailAddressesJson = Json.toJson(tooManyDifferentEmailAddresses)
       serializedTooManyDifferentEmailAddressesJson.validate[EmailVerificationStateError] shouldBe JsSuccess(tooManyDifferentEmailAddresses)
     }
-    
+
     "fail to deserialize from invalid JSON" in {
       JsString("InvalidState").validate[EmailVerificationState].isError shouldBe true
       JsNumber(123).validate[EmailVerificationState].isError shouldBe true
       JsObject(Seq.empty).validate[EmailVerificationState].isError shouldBe true
     }
-
+  }
 }
 
