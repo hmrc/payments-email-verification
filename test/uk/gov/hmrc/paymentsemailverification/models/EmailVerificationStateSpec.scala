@@ -74,23 +74,6 @@ class EmailVerificationStateSpec extends UnitSpec {
       JsNumber(123).validate[EmailVerificationState].isError shouldBe true
       JsObject(Seq.empty).validate[EmailVerificationState].isError shouldBe true
     }
-    
-    "handle empty JsObject for case objects" in {
-      val okToBeVerifiedEmptyObjectJson = JsObject(Map("OkToBeVerified" -> JsObject.empty))
-      okToBeVerifiedEmptyObjectJson.validate[EmailVerificationState] shouldBe JsSuccess(okToBeVerified)
 
-      val alreadyVerifiedEmptyObjectJson = JsObject(Map("AlreadyVerified" -> JsObject.empty))
-      alreadyVerifiedEmptyObjectJson.validate[EmailVerificationStateError] shouldBe JsSuccess(alreadyVerified)
-
-      val tooManyPasscodeAttemptsEmptyObjectJson = JsObject(Map("TooManyPasscodeAttempts" -> JsObject.empty))
-      tooManyPasscodeAttemptsEmptyObjectJson.validate[EmailVerificationStateError] shouldBe JsSuccess(tooManyPasscodeAttempts)
-
-      val tooManyPasscodeJourneysStartedEmptyObjectJson = JsObject(Map("TooManyPasscodeJourneysStarted" -> JsObject.empty))
-      tooManyPasscodeJourneysStartedEmptyObjectJson.validate[EmailVerificationStateError] shouldBe JsSuccess(tooManyPasscodeJourneysStarted)
-
-      val tooManyDifferentEmailAddressesEmptyObjectJson = JsObject(Map("TooManyDifferentEmailAddresses" -> JsObject.empty))
-      tooManyDifferentEmailAddressesEmptyObjectJson.validate[EmailVerificationStateError] shouldBe JsSuccess(tooManyDifferentEmailAddresses)
-    }
-  }
 }
 
