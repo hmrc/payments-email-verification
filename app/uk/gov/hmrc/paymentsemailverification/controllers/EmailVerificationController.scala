@@ -19,7 +19,7 @@ package uk.gov.hmrc.paymentsemailverification.controllers
 import com.google.inject.{Inject, Singleton}
 import paymentsEmailVerification.models.api.{GetEmailVerificationResultRequest, StartEmailVerificationJourneyRequest}
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import play.api.mvc.{Action, AnyContent, ControllerComponents, Request}
 import uk.gov.hmrc.paymentsemailverification.actions.Actions
 import uk.gov.hmrc.paymentsemailverification.crypto.CryptoFormat
 import uk.gov.hmrc.paymentsemailverification.services.{EmailVerificationService, EmailVerificationStatusService}
@@ -33,24 +33,28 @@ class EmailVerificationController @Inject() (
     emailVerificationService:       EmailVerificationService,
     emailVerificationStatusService: EmailVerificationStatusService,
     cc:                             ControllerComponents
-)(implicit exec: ExecutionContext) extends BackendController(cc) {
+)(using ExecutionContext) extends BackendController(cc) {
 
-  implicit val cryptoFormat: CryptoFormat = CryptoFormat.NoOpCryptoFormat
+  given CryptoFormat = CryptoFormat.NoOpCryptoFormat
 
   val startEmailVerificationJourney: Action[StartEmailVerificationJourneyRequest] =
-    actions.authenticatedAction(parse.json[StartEmailVerificationJourneyRequest]).async { implicit request =>
+    actions.authenticatedAction(parse.json[StartEmailVerificationJourneyRequest]).async { request =>
+      given Request[StartEmailVerificationJourneyRequest] = request
+
       emailVerificationService.startEmailVerificationJourney(request.body, request.ggCredId)
         .map(result => Ok(Json.toJson(result)))
     }
 
   val getEmailVerificationResult: Action[GetEmailVerificationResultRequest] =
-    actions.authenticatedAction(parse.json[GetEmailVerificationResultRequest]).async{ implicit request =>
+    actions.authenticatedAction(parse.json[GetEmailVerificationResultRequest]).async{ request =>
+      given Request[GetEmailVerificationResultRequest] = request
+
       emailVerificationService.getVerificationResult(request.body, request.ggCredId)
         .map(result => Ok(Json.toJson(result)))
     }
 
   val getEarliestCreatedAt: Action[AnyContent] =
-    actions.authenticatedAction.async { implicit request =>
+    actions.authenticatedAction.async { request =>
       emailVerificationStatusService.findEarliestCreatedAt(request.ggCredId)
         .map(result => Ok(Json.toJson(result)))
     }

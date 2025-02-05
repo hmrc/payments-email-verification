@@ -36,10 +36,10 @@ final case class EmailVerificationStatus(
 
 object EmailVerificationStatus {
 
-  implicit val instantFormat: Format[Instant] = MongoJavatimeFormats.instantFormat
+  given Format[Instant] = MongoJavatimeFormats.instantFormat
 
   @SuppressWarnings(Array("org.wartremover.warts.Any"))
-  implicit def format(implicit cryptoFormat: CryptoFormat): OFormat[EmailVerificationStatus] = {
+  given format(using cryptoFormat: CryptoFormat): OFormat[EmailVerificationStatus] = {
     Json.format[EmailVerificationStatus]
   }
 

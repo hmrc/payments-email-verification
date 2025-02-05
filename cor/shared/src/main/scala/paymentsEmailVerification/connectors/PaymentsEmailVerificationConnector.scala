@@ -20,6 +20,7 @@ import com.google.inject.{Inject, Singleton}
 import paymentsEmailVerification.models.EmailVerificationResult
 import paymentsEmailVerification.models.api.{GetEarliestCreatedAtTimeResponse, GetEmailVerificationResultRequest, StartEmailVerificationJourneyRequest, StartEmailVerificationJourneyResponse}
 import play.api.libs.json.Json
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.HttpReads.Implicits._
@@ -29,9 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PaymentsEmailVerificationConnector @Inject() (httpClient: HttpClientV2, servicesConfig: ServicesConfig)(
-    implicit
-    ec: ExecutionContext
-) {
+    using ExecutionContext) {
 
   private val baseUrl: String = servicesConfig.baseUrl("payments-email-verification")
 
@@ -41,13 +40,13 @@ class PaymentsEmailVerificationConnector @Inject() (httpClient: HttpClientV2, se
 
   private val getEarliestCreatedAtTime = s"$baseUrl/payments-email-verification/earliest-created-at"
 
-  def startEmailVerification(request: StartEmailVerificationJourneyRequest)(implicit hc: HeaderCarrier): Future[StartEmailVerificationJourneyResponse] =
+  def startEmailVerification(request: StartEmailVerificationJourneyRequest)(using HeaderCarrier): Future[StartEmailVerificationJourneyResponse] =
     httpClient.post(url"$startEmailVerificationUrl").withBody(Json.toJson(request)).execute[StartEmailVerificationJourneyResponse]
 
-  def getEmailVerificationResult(request: GetEmailVerificationResultRequest)(implicit hc: HeaderCarrier): Future[EmailVerificationResult] =
+  def getEmailVerificationResult(request: GetEmailVerificationResultRequest)(using HeaderCarrier): Future[EmailVerificationResult] =
     httpClient.post(url"$getEmailVerificationResultUrl").withBody(Json.toJson(request)).execute[EmailVerificationResult]
 
-  def getEarliestCreatedAtTime()(implicit hc: HeaderCarrier): Future[GetEarliestCreatedAtTimeResponse] =
+  def getEarliestCreatedAtTime()(using HeaderCarrier): Future[GetEarliestCreatedAtTimeResponse] =
     httpClient.get(url"$getEarliestCreatedAtTime").execute[GetEarliestCreatedAtTimeResponse]
 
 }

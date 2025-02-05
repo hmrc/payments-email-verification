@@ -24,6 +24,6 @@ final case class GetEmailVerificationResultRequest(email: Email)
 object GetEmailVerificationResultRequest {
 
   @SuppressWarnings(Array("org.wartremover.warts.Any"))
-  implicit val format: OFormat[GetEmailVerificationResultRequest] = Json.format
+  given OFormat[GetEmailVerificationResultRequest] = Json.format
 
 }

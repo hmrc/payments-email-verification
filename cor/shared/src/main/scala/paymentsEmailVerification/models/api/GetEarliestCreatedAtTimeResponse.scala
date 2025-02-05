@@ -26,6 +26,6 @@ final case class GetEarliestCreatedAtTimeResponse(
 
 object GetEarliestCreatedAtTimeResponse {
 
-  implicit val format: OFormat[GetEarliestCreatedAtTimeResponse] = Json.format
+  given OFormat[GetEarliestCreatedAtTimeResponse] = Json.format
 
 }

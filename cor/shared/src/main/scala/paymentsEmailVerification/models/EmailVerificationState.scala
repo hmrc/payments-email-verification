@@ -17,8 +17,8 @@
 package paymentsEmailVerification.models
 
 import enumeratum.{Enum, EnumEntry}
-import julienrf.json.derived
 import play.api.libs.json.OFormat
+import zio.json.{DeriveJsonDecoder, DeriveJsonEncoder, JsonEncoder}
 
 import scala.collection.immutable
 
@@ -29,10 +29,16 @@ sealed trait EmailVerificationStateError extends EmailVerificationState
 object EmailVerificationState extends Enum[EmailVerificationState] {
 
   @SuppressWarnings(Array("org.wartremover.warts.Any"))
-  implicit val stateFormat: OFormat[EmailVerificationState] = derived.oformat[EmailVerificationState]()
+  given OFormat[EmailVerificationState] = DerivedJson.oformat(
+    DeriveJsonEncoder.gen[EmailVerificationState],
+    DeriveJsonDecoder.gen[EmailVerificationState]
+  )
 
   @SuppressWarnings(Array("org.wartremover.warts.Any"))
-  implicit val stateErrorFormat: OFormat[EmailVerificationStateError] = derived.oformat[EmailVerificationStateError]()
+  given OFormat[EmailVerificationStateError] = DerivedJson.oformat(
+    DeriveJsonEncoder.gen[EmailVerificationStateError],
+    DeriveJsonDecoder.gen[EmailVerificationStateError]
+  )
 
   case object OkToBeVerified extends EmailVerificationState
 

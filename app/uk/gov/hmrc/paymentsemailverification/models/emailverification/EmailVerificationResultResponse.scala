@@ -28,10 +28,10 @@ object EmailVerificationResultResponse {
   object EmailResult {
 
     @SuppressWarnings(Array("org.wartremover.warts.Any"))
-    implicit val reads: Reads[EmailResult] = Json.reads
+    given Reads[EmailResult] = Json.reads
 
   }
 
-  implicit val reads: Reads[EmailVerificationResultResponse] = Json.reads
+  given Reads[EmailVerificationResultResponse] = Json.reads
 
 }

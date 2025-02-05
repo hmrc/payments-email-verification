@@ -26,10 +26,10 @@ final case class EncryptedEmail(value: SensitiveString) extends AnyVal
 
 object EncryptedEmail {
 
-  implicit val eq: Eq[EncryptedEmail] = Eq.fromUniversalEquals
+  given Eq[EncryptedEmail] = Eq.fromUniversalEquals
 
-  implicit def format(implicit cryptoFormat: crypto.CryptoFormat): Format[EncryptedEmail] = {
-    implicit val sensitiveStringFormat: Format[SensitiveString] = crypto.sensitiveStringFormat(cryptoFormat)
+  given format(using cryptoFormat: crypto.CryptoFormat): Format[EncryptedEmail] = {
+    given Format[SensitiveString] = crypto.sensitiveStringFormat(cryptoFormat)
     Json.valueFormat
   }
 

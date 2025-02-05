@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.paymentsemailverification.testsupport
 
-import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.verification.LoggedRequest
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
@@ -24,41 +23,25 @@ import org.scalatest.matchers.should.Matchers
 import play.api.libs.json.{JsValue, Json}
 
 import scala.concurrent.ExecutionContext
-import scala.jdk.CollectionConverters._
 
 trait RichMatchers
-  extends Matchers
-  with TryValues
-  with EitherValues
-  with OptionValues
-  with AppendedClues
-  with ScalaFutures
-  with StreamlinedXml
-  with Inside
-  with Eventually
-  with IntegrationPatience
-  with JsonSyntax {
+  extends Matchers,
+    TryValues,
+    EitherValues,
+    OptionValues,
+    AppendedClues,
+    ScalaFutures,
+    StreamlinedXml,
+    Inside,
+    Eventually,
+    IntegrationPatience,
+    JsonSyntax {
 
-  implicit lazy val ec: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
+  given ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 
   @SuppressWarnings(Array("org.wartremover.warts.ExplicitImplicitTypes", "org.wartremover.warts.PublicInference"))
   implicit def toLoggedRequestOps(lr: LoggedRequest): Object { def getBodyAsJson: JsValue } = new {
     def getBodyAsJson: JsValue = Json.parse(lr.getBodyAsString)
   }
-
-  /**
-   * Returns recorded by WireMock request.
-   * Asserts there was only one request made to wire mock.
-   * Use it in Connector unit tests.
-   */
-  def getRecordedRequest(): LoggedRequest = {
-    val allRecordedRequests = WireMock.getAllServeEvents().asScala.map(_.getRequest)
-    allRecordedRequests.toList match {
-      case r :: Nil => r
-      case _        => fail("there suppose to be only one request recorded")
-    }
-  }
-
-  def assertThereWasOnlyOneRequest(): LoggedRequest = getRecordedRequest()
 
 }

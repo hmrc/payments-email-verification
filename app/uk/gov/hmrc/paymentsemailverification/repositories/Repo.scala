@@ -19,6 +19,7 @@ package uk.gov.hmrc.paymentsemailverification.repositories
 import org.bson.codecs.Codec
 import org.mongodb.scala.model.{Filters, IndexModel, ReplaceOptions}
 import play.api.libs.json._
+import org.mongodb.scala.SingleObservableFuture
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.paymentsemailverification.repositories.Repo.{Id, IdExtractor}
@@ -34,7 +35,7 @@ abstract class Repo[ID, A: ClassTag](
     extraCodecs:    Seq[Codec[_]],
     replaceIndexes: Boolean         = false
 )(implicit
-    domainFormat: OFormat[A],
+  domainFormat: OFormat[A],
   executionContext: ExecutionContext,
   id:               Id[ID],
   idExtractor:      IdExtractor[A, ID]

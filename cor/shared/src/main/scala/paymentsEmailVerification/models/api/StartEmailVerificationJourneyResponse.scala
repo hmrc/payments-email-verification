@@ -16,19 +16,27 @@
 
 package paymentsEmailVerification.models.api
 
-import julienrf.json.derived
-import paymentsEmailVerification.models.EmailVerificationStateError
+import paymentsEmailVerification.models.{DerivedJson, EmailVerificationStateError}
 import play.api.libs.json.OFormat
+import zio.json.{DeriveJsonDecoder, DeriveJsonEncoder, JsonDecoder, JsonEncoder}
 
 sealed trait StartEmailVerificationJourneyResponse
 
 object StartEmailVerificationJourneyResponse {
 
   final case class Success(redirectUrl: String) extends StartEmailVerificationJourneyResponse
-
+  
   final case class Error(reason: EmailVerificationStateError) extends StartEmailVerificationJourneyResponse
-
+  
   @SuppressWarnings(Array("org.wartremover.warts.Any"))
-  implicit val format: OFormat[StartEmailVerificationJourneyResponse] = derived.oformat[StartEmailVerificationJourneyResponse]()
-
+  given OFormat[StartEmailVerificationJourneyResponse] = {
+    given JsonEncoder[EmailVerificationStateError] = DeriveJsonEncoder.gen[EmailVerificationStateError]
+    given JsonDecoder[EmailVerificationStateError] = DeriveJsonDecoder.gen[EmailVerificationStateError]
+    
+    DerivedJson.oformat(
+      DeriveJsonEncoder.gen[StartEmailVerificationJourneyResponse],
+      DeriveJsonDecoder.gen[StartEmailVerificationJourneyResponse]
+    )
+  }
+  
 }

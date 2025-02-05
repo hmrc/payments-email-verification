@@ -22,23 +22,24 @@ import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import uk.gov.hmrc.paymentsemailverification.config.AppConfig
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import uk.gov.hmrc.paymentsemailverification.models.GGCredId
 import uk.gov.hmrc.paymentsemailverification.models.emailverification.{EmailVerificationResultResponse, RequestEmailVerificationRequest}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EmailVerificationConnector @Inject() (appConfig: AppConfig, httpClient: HttpClientV2)(implicit ec: ExecutionContext) {
+class EmailVerificationConnector @Inject() (appConfig: AppConfig, httpClient: HttpClientV2)(using ExecutionContext) {
 
   private val requestVerificationUrl: String = appConfig.emailVerificationUrl + "/email-verification/verify-email"
 
   private def getVerificationStatusUrl(ggCredId: GGCredId): String =
     appConfig.emailVerificationUrl + s"/email-verification/verification-status/${ggCredId.value}"
 
-  def requestEmailVerification(emailVerificationRequest: RequestEmailVerificationRequest)(implicit hc: HeaderCarrier): Future[HttpResponse] =
+  def requestEmailVerification(emailVerificationRequest: RequestEmailVerificationRequest)(using HeaderCarrier): Future[HttpResponse] =
     httpClient.post(url"$requestVerificationUrl").withBody(Json.toJson(emailVerificationRequest)).execute[HttpResponse]
 
-  def getVerificationStatus(ggCredId: GGCredId)(implicit hc: HeaderCarrier): Future[EmailVerificationResultResponse] =
+  def getVerificationStatus(ggCredId: GGCredId)(using HeaderCarrier): Future[EmailVerificationResultResponse] =
     httpClient.get(url"${getVerificationStatusUrl(ggCredId)}").execute[EmailVerificationResultResponse]
 
 }

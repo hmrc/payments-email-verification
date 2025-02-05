@@ -17,9 +17,9 @@
 package uk.gov.hmrc.paymentsemailverification.controllers
 
 import paymentsEmailVerification.connectors.PaymentsEmailVerificationConnector
-import paymentsEmailVerification.models.{Email, EmailVerificationResult, EmailVerificationState, NumberOfPasscodeJourneysStarted}
 import paymentsEmailVerification.models.api.{GetEmailVerificationResultRequest, StartEmailVerificationJourneyRequest, StartEmailVerificationJourneyResponse}
-import play.api.test.Helpers._
+import paymentsEmailVerification.models.{Email, EmailVerificationResult, EmailVerificationState, NumberOfPasscodeJourneysStarted}
+import play.api.test.Helpers.*
 import uk.gov.hmrc.crypto.Sensitive.SensitiveString
 import uk.gov.hmrc.http.{Authorization, HeaderCarrier, UpstreamErrorResponse}
 import uk.gov.hmrc.paymentsemailverification.models.emailverification.EmailVerificationResultResponse.EmailResult
@@ -40,7 +40,7 @@ class EmailVerificationControllerSpec extends ItSpec {
 
   val emailVerificationStatusRepo: EmailVerificationStatusRepo = app.injector.instanceOf[EmailVerificationStatusRepo]
 
-  implicit val hcWithAuthorisation: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(TestData.authToken)))
+  given HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(TestData.authToken)))
 
   "POST /email-verification/start" - {
 
@@ -66,7 +66,7 @@ class EmailVerificationControllerSpec extends ItSpec {
         lastUpdated                     = TestData.frozenInstant
       )
 
-    behave like authenticatedEndpointBehaviour(connector.startEmailVerification(startEmailVerificationJourneyRequest)(_))
+    behave like authenticatedEndpointBehaviour(connector.startEmailVerification(startEmailVerificationJourneyRequest)(using _))
 
     "return a redirect url if a journey is successfully started" in {
       val redirectUri: String = "/redirect"
@@ -181,7 +181,7 @@ class EmailVerificationControllerSpec extends ItSpec {
   "POST /email-verification/status" - {
 
     behave like authenticatedEndpointBehaviour(
-      connector.getEmailVerificationResult(GetEmailVerificationResultRequest(Email("email")))(_)
+      connector.getEmailVerificationResult(GetEmailVerificationResultRequest(Email("email")))(using _)
     )
 
     "return a 'Verified' response if the email address has been verified with the GG cred id" in {
@@ -323,7 +323,7 @@ class EmailVerificationControllerSpec extends ItSpec {
 
   "GET /email-verification/earliest-created-at" - {
 
-    behave like authenticatedEndpointBehaviour(connector.getEarliestCreatedAtTime()(_))
+    behave like authenticatedEndpointBehaviour(connector.getEarliestCreatedAtTime()(using _))
 
     "should return the earliest created at date when one can be found" in {
       AuthStub.authorise()
@@ -375,6 +375,8 @@ class EmailVerificationControllerSpec extends ItSpec {
     "must throw an error if no cred id can be found in the HeaderCarrier" in {
       AuthStub.authorise(None)
 
+      val hcWithAuthorisation: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(TestData.authToken)))
+
       val error = intercept[UpstreamErrorResponse](await(getResult(hcWithAuthorisation)))
       error.statusCode shouldBe INTERNAL_SERVER_ERROR
     }
@@ -389,7 +391,7 @@ class EmailVerificationNonLocalControllerSpec extends ItSpec {
 
   val connector = app.injector.instanceOf[PaymentsEmailVerificationConnector]
 
-  implicit val hcWithAuthorisation: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(TestData.authToken)))
+  given HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(TestData.authToken)))
 
   "POST /email-verification/start" - {
 

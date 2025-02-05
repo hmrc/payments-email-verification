@@ -22,5 +22,5 @@ final case class RequestEmailVerificationSuccess(redirectUri: String)
 
 object RequestEmailVerificationSuccess {
 
-  implicit val reads: Reads[RequestEmailVerificationSuccess] = Json.reads
+  given Reads[RequestEmailVerificationSuccess] = Json.reads
 }

@@ -18,7 +18,6 @@ package uk.gov.hmrc.paymentsemailverification.services
 
 import cats.syntax.eq._
 import com.google.inject.{Inject, Singleton}
-import paymentsEmailVerification.models.Email
 import paymentsEmailVerification.models.EmailVerificationState._
 import paymentsEmailVerification.models._
 import paymentsEmailVerification.models.api._
@@ -40,7 +39,7 @@ class EmailVerificationService @Inject() (
     appConfig:                      AppConfig,
     connector:                      EmailVerificationConnector,
     emailVerificationStatusService: EmailVerificationStatusService
-)(implicit ec: ExecutionContext) {
+)(using ExecutionContext) {
 
   private val maxPasscodeJourneysPerEmailAddress: Int = appConfig.emailVerificationStatusMaxAttemptsPerEmail
   private val maxNumberOfDifferentEmails: Int = appConfig.emailVerificationStatusMaxUniqueEmailsAllowed
@@ -48,7 +47,7 @@ class EmailVerificationService @Inject() (
   def startEmailVerificationJourney(
       request:  StartEmailVerificationJourneyRequest,
       ggCredId: GGCredId
-  )(implicit hc: HeaderCarrier): Future[StartEmailVerificationJourneyResponse] = {
+  )(using HeaderCarrier): Future[StartEmailVerificationJourneyResponse] = {
     val emailVerificationRequest = RequestEmailVerificationRequest(
       ggCredId,
       request.continueUrl,
@@ -114,7 +113,7 @@ class EmailVerificationService @Inject() (
   def getVerificationResult(
       request:  GetEmailVerificationResultRequest,
       ggCredId: GGCredId
-  )(implicit hc: HeaderCarrier): Future[EmailVerificationResult] = {
+  )(using HeaderCarrier): Future[EmailVerificationResult] = {
     connector.getVerificationStatus(ggCredId).flatMap { statusResponse =>
       statusResponse.emails.find(_.emailAddress.toLowerCase(Locale.UK) === request.email.value.toLowerCase(Locale.UK)) match {
         case None =>
