@@ -26,8 +26,8 @@ object DerivedJson {
       override def writes(o: A): JsObject =
         Json.parse(encoder.encodeJson(o).toString) match
           case j: JsObject => j
-          // if sealed trait is extended only be case objects then zio will write JsString's instead of JsObjects -
-          // make sure we write an empty js object in those cases
+          // if sealed trait is extended only by case objects then zio will write JsString's instead of JsObjects -
+          // make sure we write an empty JsObject in those cases
           case s: JsString => JsObject(Map(s.value -> JsObject.empty))
           case e => throw new Exception(s"Unexpected json type: ${e.getClass.getSimpleName}")
 

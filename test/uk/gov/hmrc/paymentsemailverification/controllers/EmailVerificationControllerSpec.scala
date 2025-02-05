@@ -17,8 +17,8 @@
 package uk.gov.hmrc.paymentsemailverification.controllers
 
 import paymentsEmailVerification.connectors.PaymentsEmailVerificationConnector
-import paymentsEmailVerification.models.{Email, EmailVerificationResult, EmailVerificationState, NumberOfPasscodeJourneysStarted}
 import paymentsEmailVerification.models.api.{GetEmailVerificationResultRequest, StartEmailVerificationJourneyRequest, StartEmailVerificationJourneyResponse}
+import paymentsEmailVerification.models.{Email, EmailVerificationResult, EmailVerificationState, NumberOfPasscodeJourneysStarted}
 import play.api.test.Helpers.*
 import uk.gov.hmrc.crypto.Sensitive.SensitiveString
 import uk.gov.hmrc.http.{Authorization, HeaderCarrier, UpstreamErrorResponse}

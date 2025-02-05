@@ -17,21 +17,57 @@
 package uk.gov.hmrc.paymentsemailverification.models
 
 import paymentsEmailVerification.models.EmailVerificationResult
-import play.api.libs.json.Json
+import play.api.libs.json.{JsNumber, JsObject, JsString, JsSuccess, Json}
 import uk.gov.hmrc.paymentsemailverification.testsupport.UnitSpec
 
 class EmailVerificationResultSpec extends UnitSpec {
 
-  val resultJson = Json.parse(
+  val resultJsonVerified = Json.parse(
     """{
       | "Verified": {}
       |}""".stripMargin)
 
-  val model: EmailVerificationResult = EmailVerificationResult.Verified
+  val resultJsonLocked = Json.parse(
+    """{
+      | "Locked": {}
+      |}""".stripMargin)
 
-  "model should parse to json" in {
+  val modelVerified: EmailVerificationResult = EmailVerificationResult.Verified
+  val modelLocked: EmailVerificationResult = EmailVerificationResult.Locked
 
-    Json.toJson(model) shouldBe resultJson
+  "EmailVerificationResult JSON serialization and deserialization" - {
+
+    "serialize each case object to the correct JSON" in {
+      Json.toJson(modelVerified) shouldBe resultJsonVerified
+      Json.toJson(modelLocked) shouldBe resultJsonLocked
+    }
+
+    "deserialize from valid JSON to the correct case object" in {
+      JsString("Verified").validate[EmailVerificationResult] shouldBe JsSuccess(modelVerified)
+      JsString("Locked").validate[EmailVerificationResult] shouldBe JsSuccess(modelLocked)
+    }
+
+    "perform serialization and deserialization" in {
+      val verifiedJson = Json.toJson(modelVerified)
+      verifiedJson.validate[EmailVerificationResult] shouldBe JsSuccess(modelVerified)
+
+      val lockedJson = Json.toJson(modelLocked)
+      lockedJson.validate[EmailVerificationResult] shouldBe JsSuccess(modelLocked)
+    }
+
+    "fail to deserialize from invalid JSON" in {
+      JsString("Invalid").validate[EmailVerificationResult].isError shouldBe true
+      JsNumber(123).validate[EmailVerificationResult].isError shouldBe true
+      JsObject(Seq.empty).validate[EmailVerificationResult].isError shouldBe true
+    }
+
+    "handle empty JsObject for case objects" in {
+      val verifiedEmptyObjectSerializedJson = JsObject(Map("Verified" -> JsObject.empty))
+      verifiedEmptyObjectSerializedJson.validate[EmailVerificationResult] shouldBe JsSuccess(modelVerified)
+
+      val lockedEmptyObjectSerializedJson = JsObject(Map("Locked" -> JsObject.empty))
+      lockedEmptyObjectSerializedJson.validate[EmailVerificationResult] shouldBe JsSuccess(modelLocked)
+    }
   }
-
+  
 }
