@@ -20,15 +20,15 @@ import paymentsEmailVerification.models.Email
 import play.api.libs.json.{Json, OFormat}
 
 final case class StartEmailVerificationJourneyRequest(
-    continueUrl:               String,
-    origin:                    String,
-    deskproServiceName:        String,
-    accessibilityStatementUrl: String,
-    pageTitle:                 String,
-    backUrl:                   String,
-    enterEmailUrl:             String,
-    email:                     Email,
-    lang:                      String
+  continueUrl:               String,
+  origin:                    String,
+  deskproServiceName:        String,
+  accessibilityStatementUrl: String,
+  pageTitle:                 String,
+  backUrl:                   String,
+  enterEmailUrl:             String,
+  email:                     Email,
+  lang:                      String
 )
 
 object StartEmailVerificationJourneyRequest {

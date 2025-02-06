@@ -20,23 +20,24 @@ import paymentsEmailVerification.models.{DerivedJson, EmailVerificationStateErro
 import play.api.libs.json.OFormat
 import zio.json.{DeriveJsonDecoder, DeriveJsonEncoder, JsonDecoder, JsonEncoder}
 
-sealed trait StartEmailVerificationJourneyResponse
+sealed trait StartEmailVerificationJourneyResponse derives CanEqual
 
 object StartEmailVerificationJourneyResponse {
 
   final case class Success(redirectUrl: String) extends StartEmailVerificationJourneyResponse
-  
+
   final case class Error(reason: EmailVerificationStateError) extends StartEmailVerificationJourneyResponse
-  
+
   @SuppressWarnings(Array("org.wartremover.warts.Any"))
   given OFormat[StartEmailVerificationJourneyResponse] = {
+
     given JsonEncoder[EmailVerificationStateError] = DeriveJsonEncoder.gen[EmailVerificationStateError]
     given JsonDecoder[EmailVerificationStateError] = DeriveJsonDecoder.gen[EmailVerificationStateError]
-    
+
     DerivedJson.oformat(
       DeriveJsonEncoder.gen[StartEmailVerificationJourneyResponse],
       DeriveJsonDecoder.gen[StartEmailVerificationJourneyResponse]
     )
   }
-  
+
 }

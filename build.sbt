@@ -10,13 +10,15 @@ ThisBuild / majorVersion  := 4
 
 lazy val scalaCompilerOptions = Seq(
   "-Xfatal-warnings",
+  "-Wvalue-discard",
   "-deprecation",
   "-feature",
   "-unchecked",
   "-language:implicitConversions",
+  "-language:strictEquality",
+  // required in place of silencer plugin
   "-Wconf:msg=unused-imports&src=html/.*:s",
-  "-Wconf:src=routes/.*:s",
-  "-Yretain-trees"
+  "-Wconf:src=routes/.*:s"
 )
 
 lazy val commonSettings = Seq[SettingsDefinition](
@@ -25,6 +27,7 @@ lazy val commonSettings = Seq[SettingsDefinition](
   shellPrompt := ShellPrompt(version.value),
   buildInfoPackage := name.value.toLowerCase().replaceAllLiterally("-", ""),
   (Compile / doc / scalacOptions) := Seq(), //this will allow to have warnings in `doc` task and not fail the build
+  scalafmtOnCompile := true,
   scalaSettings,
   uk.gov.hmrc.DefaultBuildSettings.defaultSettings(),
   WartRemoverSettings.wartRemoverSettings,

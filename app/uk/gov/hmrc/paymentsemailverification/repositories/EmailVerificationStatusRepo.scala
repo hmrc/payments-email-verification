@@ -32,45 +32,44 @@ import java.util.concurrent.TimeUnit
 import scala.concurrent.{ExecutionContext, Future}
 
 final class EmailVerificationStatusRepo @Inject() (
-    mongoComponent: MongoComponent,
-    config:         AppConfig
+  mongoComponent: MongoComponent,
+  config:         AppConfig
 )(using ExecutionContext, OperationalCryptoFormat)
-  extends Repo[CorrelationId, EmailVerificationStatus](
-    collectionName = "emailVerificationStatus",
-    mongoComponent = mongoComponent,
-    indexes        = EmailVerificationStatusRepo.indexes(config.emailVerificationStatusRepoTtl.toSeconds),
-    extraCodecs    = Codecs.playFormatCodecsBuilder(EmailVerificationStatus.format).build,
-    replaceIndexes = true
-  ) {
+    extends Repo[CorrelationId, EmailVerificationStatus](
+      collectionName = "emailVerificationStatus",
+      mongoComponent = mongoComponent,
+      indexes = EmailVerificationStatusRepo.indexes(config.emailVerificationStatusRepoTtl.toSeconds),
+      extraCodecs = Codecs.playFormatCodecsBuilder(EmailVerificationStatus.format).build,
+      replaceIndexes = true
+    ) {
 
   def findAllEntries(ggCredId: GGCredId): Future[List[EmailVerificationStatus]] =
     collection
       .find(filter = Filters.eq("credId", ggCredId.value))
       .sort(BsonDocument("createdAt" -> -1))
-      .toFuture().map(_.toList)
+      .toFuture()
+      .map(_.toList)
 
   def update(emailVerificationStatus: EmailVerificationStatus): Future[Unit] = upsert(emailVerificationStatus)
 }
 
 object EmailVerificationStatusRepo {
 
-  /**
-   * I've used correlationId as it saves us from having to create a new value to be used for _id.
-   * We can always change this, but it kind of makes sense since there will be a value linkable between this db and journey db.
-   */
-  implicit val correlationId: Id[CorrelationId] = (i: CorrelationId) => i.value.toString
+  /** I've used correlationId as it saves us from having to create a new value to be used for _id. We can always change
+    * this, but it kind of makes sense since there will be a value linkable between this db and journey db.
+    */
+  implicit val correlationId: Id[CorrelationId]                                            = (i: CorrelationId) => i.value.toString
   implicit val correlationIdExtractor: IdExtractor[EmailVerificationStatus, CorrelationId] =
     (emailVerificationStatus: EmailVerificationStatus) => CorrelationId(emailVerificationStatus._id)
 
   def indexes(cacheTtlInSeconds: Long): Seq[IndexModel] = Seq(
     IndexModel(
-      keys         = Indexes.ascending("lastUpdated"),
+      keys = Indexes.ascending("lastUpdated"),
       indexOptions = IndexOptions().expireAfter(cacheTtlInSeconds, TimeUnit.SECONDS).name("lastUpdatedIdx")
     ),
     IndexModel(
-      keys         = Indexes.ascending("credId"),
+      keys = Indexes.ascending("credId"),
       indexOptions = IndexOptions().name("credIdIdx")
     )
   )
 }
-

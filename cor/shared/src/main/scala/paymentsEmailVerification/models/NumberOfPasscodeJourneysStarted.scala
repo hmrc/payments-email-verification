@@ -18,7 +18,7 @@ package paymentsEmailVerification.models
 
 import play.api.libs.json.{Format, Json}
 
-final case class NumberOfPasscodeJourneysStarted(value: Int) extends AnyVal
+final case class NumberOfPasscodeJourneysStarted(value: Int) extends AnyVal derives CanEqual
 
 object NumberOfPasscodeJourneysStarted {
 

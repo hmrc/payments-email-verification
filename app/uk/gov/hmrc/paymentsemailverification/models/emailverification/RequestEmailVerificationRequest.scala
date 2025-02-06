@@ -22,15 +22,15 @@ import uk.gov.hmrc.paymentsemailverification.models.GGCredId
 import uk.gov.hmrc.paymentsemailverification.models.emailverification.RequestEmailVerificationRequest.EmailDetails
 
 final case class RequestEmailVerificationRequest(
-    credId:                    GGCredId,
-    continueUrl:               String,
-    origin:                    String,
-    deskproServiceName:        String,
-    accessibilityStatementUrl: String,
-    pageTitle:                 String,
-    backUrl:                   String,
-    email:                     EmailDetails,
-    lang:                      String
+  credId:                    GGCredId,
+  continueUrl:               String,
+  origin:                    String,
+  deskproServiceName:        String,
+  accessibilityStatementUrl: String,
+  pageTitle:                 String,
+  backUrl:                   String,
+  email:                     EmailDetails,
+  lang:                      String
 )
 
 object RequestEmailVerificationRequest {

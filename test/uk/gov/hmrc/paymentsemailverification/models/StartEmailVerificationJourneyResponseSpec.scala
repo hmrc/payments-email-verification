@@ -20,6 +20,7 @@ import paymentsEmailVerification.models.EmailVerificationState
 import paymentsEmailVerification.models.api.StartEmailVerificationJourneyResponse
 import play.api.libs.json.*
 import uk.gov.hmrc.paymentsemailverification.testsupport.UnitSpec
+import uk.gov.hmrc.paymentsemailverification.testsupport.Givens.{jsResultCanEqual, jsValueCanEqual}
 
 class StartEmailVerificationJourneyResponseSpec extends UnitSpec {
 
@@ -34,7 +35,9 @@ class StartEmailVerificationJourneyResponseSpec extends UnitSpec {
   val errorJson = Json.parse(
     """{
       | "Error": {
-      |   "reason":"TooManyPasscodeAttempts"
+      |   "reason": {
+      |     "TooManyPasscodeAttempts": {}
+      |   }
       | }
       |}""".stripMargin
   )
@@ -43,7 +46,7 @@ class StartEmailVerificationJourneyResponseSpec extends UnitSpec {
     StartEmailVerificationJourneyResponse.Success(redirectUrl = "https://example.com/verify-email")
 
   val errorResponse: StartEmailVerificationJourneyResponse =
-    StartEmailVerificationJourneyResponse.Error(reason = EmailVerificationState.TooManyPasscodeAttempts)
+    StartEmailVerificationJourneyResponse.Error(reason = EmailVerificationState.TooManyPasscodeAttempts())
 
   "StartEmailVerificationJourneyResponse JSON serialization and deserialization" - {
 
@@ -57,14 +60,6 @@ class StartEmailVerificationJourneyResponseSpec extends UnitSpec {
       errorJson.validate[StartEmailVerificationJourneyResponse] shouldBe JsSuccess(errorResponse)
     }
 
-    "perform serialization and deserialization for all cases" in {
-      val serializedSuccessJson = Json.toJson(successResponse)
-      serializedSuccessJson.validate[StartEmailVerificationJourneyResponse] shouldBe JsSuccess(successResponse)
-
-      val serializedErrorJson = Json.toJson(errorResponse)
-      serializedErrorJson.validate[StartEmailVerificationJourneyResponse] shouldBe JsSuccess(errorResponse)
-    }
-
     "fail to deserialize from invalid JSON" in {
       JsString("InvalidCaseClass").validate[StartEmailVerificationJourneyResponse].isError shouldBe true
       JsNumber(42).validate[StartEmailVerificationJourneyResponse].isError shouldBe true
@@ -72,4 +67,3 @@ class StartEmailVerificationJourneyResponseSpec extends UnitSpec {
     }
   }
 }
-

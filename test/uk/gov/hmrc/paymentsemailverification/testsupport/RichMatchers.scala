@@ -25,17 +25,17 @@ import play.api.libs.json.{JsValue, Json}
 import scala.concurrent.ExecutionContext
 
 trait RichMatchers
-  extends Matchers,
-    TryValues,
-    EitherValues,
-    OptionValues,
-    AppendedClues,
-    ScalaFutures,
-    StreamlinedXml,
-    Inside,
-    Eventually,
-    IntegrationPatience,
-    JsonSyntax {
+    extends Matchers,
+      TryValues,
+      EitherValues,
+      OptionValues,
+      AppendedClues,
+      ScalaFutures,
+      StreamlinedXml,
+      Inside,
+      Eventually,
+      IntegrationPatience,
+      JsonSyntax {
 
   given ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 

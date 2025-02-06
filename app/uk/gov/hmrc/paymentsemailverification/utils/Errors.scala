@@ -18,9 +18,8 @@ package uk.gov.hmrc.paymentsemailverification.utils
 
 import uk.gov.hmrc.http.UpstreamErrorResponse
 
-/**
- * Exceptions thrown by below util are expected exceptions maintained by our ErrorHandler
- */
+/** Exceptions thrown by below util are expected exceptions maintained by our ErrorHandler
+  */
 object Errors {
 
   @inline def throwNotFoundException(message: => String): Nothing = throw UpstreamErrorResponse(

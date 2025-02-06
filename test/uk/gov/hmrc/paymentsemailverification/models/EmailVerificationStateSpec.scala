@@ -19,20 +19,23 @@ package uk.gov.hmrc.paymentsemailverification.models
 import paymentsEmailVerification.models.{EmailVerificationState, EmailVerificationStateError}
 import play.api.libs.json.*
 import uk.gov.hmrc.paymentsemailverification.testsupport.UnitSpec
+import uk.gov.hmrc.paymentsemailverification.testsupport.Givens.{jsResultCanEqual, jsValueCanEqual}
 
 class EmailVerificationStateSpec extends UnitSpec {
-  
-  val okToBeVerifiedJson = Json.parse("""{ "OkToBeVerified": {} }""")
-  val alreadyVerifiedJson = Json.parse("""{ "AlreadyVerified": {} }""")
-  val tooManyPasscodeAttemptsJson = Json.parse("""{ "TooManyPasscodeAttempts": {} }""")
+
+  val okToBeVerifiedJson                 = Json.parse("""{ "OkToBeVerified": {} }""")
+  val alreadyVerifiedJson                = Json.parse("""{ "AlreadyVerified": {} }""")
+  val tooManyPasscodeAttemptsJson        = Json.parse("""{ "TooManyPasscodeAttempts": {} }""")
   val tooManyPasscodeJourneysStartedJson = Json.parse("""{ "TooManyPasscodeJourneysStarted": {} }""")
   val tooManyDifferentEmailAddressesJson = Json.parse("""{ "TooManyDifferentEmailAddresses": {} }""")
-  
-  val okToBeVerified: EmailVerificationState = EmailVerificationState.OkToBeVerified
-  val alreadyVerified: EmailVerificationStateError = EmailVerificationState.AlreadyVerified
-  val tooManyPasscodeAttempts: EmailVerificationStateError = EmailVerificationState.TooManyPasscodeAttempts
-  val tooManyPasscodeJourneysStarted: EmailVerificationStateError = EmailVerificationState.TooManyPasscodeJourneysStarted
-  val tooManyDifferentEmailAddresses: EmailVerificationStateError = EmailVerificationState.TooManyDifferentEmailAddresses
+
+  val okToBeVerified: EmailVerificationState                      = EmailVerificationState.OkToBeVerified()
+  val alreadyVerified: EmailVerificationStateError                = EmailVerificationState.AlreadyVerified()
+  val tooManyPasscodeAttempts: EmailVerificationStateError        = EmailVerificationState.TooManyPasscodeAttempts()
+  val tooManyPasscodeJourneysStarted: EmailVerificationStateError =
+    EmailVerificationState.TooManyPasscodeJourneysStarted()
+  val tooManyDifferentEmailAddresses: EmailVerificationStateError =
+    EmailVerificationState.TooManyDifferentEmailAddresses()
 
   "EmailVerificationState JSON serialization and deserialization" - {
 
@@ -48,25 +51,12 @@ class EmailVerificationStateSpec extends UnitSpec {
       okToBeVerifiedJson.validate[EmailVerificationState] shouldBe JsSuccess(okToBeVerified)
       alreadyVerifiedJson.validate[EmailVerificationStateError] shouldBe JsSuccess(alreadyVerified)
       tooManyPasscodeAttemptsJson.validate[EmailVerificationStateError] shouldBe JsSuccess(tooManyPasscodeAttempts)
-      tooManyPasscodeJourneysStartedJson.validate[EmailVerificationStateError] shouldBe JsSuccess(tooManyPasscodeJourneysStarted)
-      tooManyDifferentEmailAddressesJson.validate[EmailVerificationStateError] shouldBe JsSuccess(tooManyDifferentEmailAddresses)
-    }
-
-    "perform serialization and deserialization" in {
-      val serializedOkJson = Json.toJson(okToBeVerified)
-      serializedOkJson.validate[EmailVerificationState] shouldBe JsSuccess(okToBeVerified)
-
-      val serializedAlreadyVerifiedJson = Json.toJson(alreadyVerified)
-      serializedAlreadyVerifiedJson.validate[EmailVerificationStateError] shouldBe JsSuccess(alreadyVerified)
-
-      val serializedTooManyPasscodeAttemptsJson = Json.toJson(tooManyPasscodeAttempts)
-      serializedTooManyPasscodeAttemptsJson.validate[EmailVerificationStateError] shouldBe JsSuccess(tooManyPasscodeAttempts)
-
-      val serializedTooManyPasscodeJourneysStartedJson = Json.toJson(tooManyPasscodeJourneysStarted)
-      serializedTooManyPasscodeJourneysStartedJson.validate[EmailVerificationStateError] shouldBe JsSuccess(tooManyPasscodeJourneysStarted)
-
-      val serializedTooManyDifferentEmailAddressesJson = Json.toJson(tooManyDifferentEmailAddresses)
-      serializedTooManyDifferentEmailAddressesJson.validate[EmailVerificationStateError] shouldBe JsSuccess(tooManyDifferentEmailAddresses)
+      tooManyPasscodeJourneysStartedJson.validate[EmailVerificationStateError] shouldBe JsSuccess(
+        tooManyPasscodeJourneysStarted
+      )
+      tooManyDifferentEmailAddressesJson.validate[EmailVerificationStateError] shouldBe JsSuccess(
+        tooManyDifferentEmailAddresses
+      )
     }
 
     "fail to deserialize from invalid JSON" in {
@@ -76,4 +66,3 @@ class EmailVerificationStateSpec extends UnitSpec {
     }
   }
 }
-

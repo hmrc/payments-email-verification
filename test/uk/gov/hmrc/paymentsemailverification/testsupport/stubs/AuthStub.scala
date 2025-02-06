@@ -24,22 +24,27 @@ import uk.gov.hmrc.paymentsemailverification.testsupport.TestData
 
 object AuthStub {
 
-  def authorise(credentials: Option[Credentials] = Some(Credentials(TestData.ggCredId.value, "GovernmentGateway"))): StubMapping = {
+  def authorise(
+    credentials: Option[Credentials] = Some(Credentials(TestData.ggCredId.value, "GovernmentGateway"))
+  ): StubMapping = {
     val authoriseJsonBody = credentials.fold(
       Json.obj()
     )(credential =>
-        Json.obj(
-          "optionalCredentials" -> Json.obj(
-            "providerId" -> credential.providerId,
-            "providerType" -> credential.providerType
-          )
-        ))
+      Json.obj(
+        "optionalCredentials" -> Json.obj(
+          "providerId"   -> credential.providerId,
+          "providerType" -> credential.providerType
+        )
+      )
+    )
 
     stubFor(
       post(urlPathEqualTo("/auth/authorise"))
-        .willReturn(aResponse()
-          .withStatus(200)
-          .withBody(Json.prettyPrint(authoriseJsonBody)))
+        .willReturn(
+          aResponse()
+            .withStatus(200)
+            .withBody(Json.prettyPrint(authoriseJsonBody))
+        )
     )
   }
 

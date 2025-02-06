@@ -36,7 +36,9 @@ class EmailVerificationConnector @Inject() (appConfig: AppConfig, httpClient: Ht
   private def getVerificationStatusUrl(ggCredId: GGCredId): String =
     appConfig.emailVerificationUrl + s"/email-verification/verification-status/${ggCredId.value}"
 
-  def requestEmailVerification(emailVerificationRequest: RequestEmailVerificationRequest)(using HeaderCarrier): Future[HttpResponse] =
+  def requestEmailVerification(emailVerificationRequest: RequestEmailVerificationRequest)(using
+    HeaderCarrier
+  ): Future[HttpResponse] =
     httpClient.post(url"$requestVerificationUrl").withBody(Json.toJson(emailVerificationRequest)).execute[HttpResponse]
 
   def getVerificationStatus(ggCredId: GGCredId)(using HeaderCarrier): Future[EmailVerificationResultResponse] =

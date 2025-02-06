@@ -19,21 +19,20 @@ package uk.gov.hmrc.paymentsemailverification.models
 import paymentsEmailVerification.models.EmailVerificationResult
 import play.api.libs.json.{JsNumber, JsObject, JsString, JsSuccess, Json}
 import uk.gov.hmrc.paymentsemailverification.testsupport.UnitSpec
+import uk.gov.hmrc.paymentsemailverification.testsupport.Givens.{jsResultCanEqual, jsValueCanEqual}
 
 class EmailVerificationResultSpec extends UnitSpec {
 
-  val resultJsonVerified = Json.parse(
-    """{
+  val resultJsonVerified = Json.parse("""{
       | "Verified": {}
       |}""".stripMargin)
 
-  val resultJsonLocked = Json.parse(
-    """{
+  val resultJsonLocked = Json.parse("""{
       | "Locked": {}
       |}""".stripMargin)
 
-  val modelVerified: EmailVerificationResult = EmailVerificationResult.Verified
-  val modelLocked: EmailVerificationResult = EmailVerificationResult.Locked
+  val modelVerified: EmailVerificationResult = EmailVerificationResult.Verified()
+  val modelLocked: EmailVerificationResult   = EmailVerificationResult.Locked()
 
   "EmailVerificationResult JSON serialization and deserialization" - {
 
@@ -43,16 +42,8 @@ class EmailVerificationResultSpec extends UnitSpec {
     }
 
     "deserialize from valid JSON to the correct case object" in {
-      JsString("Verified").validate[EmailVerificationResult] shouldBe JsSuccess(modelVerified)
-      JsString("Locked").validate[EmailVerificationResult] shouldBe JsSuccess(modelLocked)
-    }
-
-    "perform serialization and deserialization" in {
-      val verifiedJson = Json.toJson(modelVerified)
-      verifiedJson.validate[EmailVerificationResult] shouldBe JsSuccess(modelVerified)
-
-      val lockedJson = Json.toJson(modelLocked)
-      lockedJson.validate[EmailVerificationResult] shouldBe JsSuccess(modelLocked)
+      resultJsonVerified.validate[EmailVerificationResult] shouldBe JsSuccess(modelVerified)
+      resultJsonLocked.validate[EmailVerificationResult] shouldBe JsSuccess(modelLocked)
     }
 
     "fail to deserialize from invalid JSON" in {

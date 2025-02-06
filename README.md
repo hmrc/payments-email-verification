@@ -66,19 +66,19 @@ result.map{
       // email verification journey successfully started. Redirect user to `redirectUrl` - this should take the user 
       // to the email-verification frontend journey to enter a passcode
     
-    case Error(EmailVerificationState.AlreadyVerified) =>
+    case Error(EmailVerificationState.AlreadyVerified()) =>
       // the email address has already been verified within the last 24 hours
 
-    case Error(EmailVerificationState.TooManyDifferentEmailAddresses) =>
+    case Error(EmailVerificationState.TooManyDifferentEmailAddresses()) =>
       // the user has requested to start an email verification journey for too many different email addresses 
       // (default max = 10). The user will be locked out of starting another passcode journey until 24 hours 
       // has elapsed after the earliest attempt was made
     
-    case Error(EmailVerificationState.TooManyPasscodeAttempts) =>
+    case Error(EmailVerificationState.TooManyPasscodeAttempts()) =>
       // the user has attempted too many incorrect passcode for the email address. They are not allowed any 
       // more attempts for this email address for 24 hours
 
-    case Error(EmailVerificationState.TooManyPasscodeJourneysStarted) =>
+    case Error(EmailVerificationState.TooManyPasscodeJourneysStarted()) =>
       // the user has requested to start an email verification journey for the same email address too many 
       // times. They are locked out of trying this email address again for 24 hours
 }
@@ -99,10 +99,10 @@ class MyClass @Inject()(paymentsEmailVerificationConnector: PaymentsEmailVerific
   val result: Future[EmailVerificationResult]  = paymentsEmailVerificationConnector.getEmailVerificationResult(request)
   
   result.map{
-    case EmailVerificationResult.Verified =>
+    case EmailVerificationResult.Verified() =>
       // email address was successfully verified
 
-    case EmailVerificationResult.Locked =>
+    case EmailVerificationResult.Locked() =>
       // the user has attempted too many incorrect passcode for the email address. They are not allowed any more attempts
       // for this email address for 24 hours
   }

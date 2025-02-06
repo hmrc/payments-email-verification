@@ -19,7 +19,7 @@ package uk.gov.hmrc.paymentsemailverification.crypto
 import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.crypto.{Decrypter, Encrypter}
 
-sealed trait CryptoFormat
+sealed trait CryptoFormat derives CanEqual
 
 object CryptoFormat {
 

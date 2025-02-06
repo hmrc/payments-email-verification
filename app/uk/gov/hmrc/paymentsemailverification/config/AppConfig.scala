@@ -29,11 +29,12 @@ class AppConfig @Inject() (config: Configuration) extends ServicesConfig(config)
 
   val emailVerificationUrl: String = baseUrl("email-verification")
 
-  val emailVerificationStatusRepoTtl: FiniteDuration = config.get[FiniteDuration]("email-verification-status.repoTtl")
-  val emailVerificationStatusMaxAttemptsPerEmail: Int = config.get[Int]("email-verification-status.maxAttemptsPerEmail")
-  val emailVerificationStatusMaxUniqueEmailsAllowed: Int = config.get[Int]("email-verification-status.maxUniqueEmailsAllowed")
+  val emailVerificationStatusRepoTtl: FiniteDuration     = config.get[FiniteDuration]("email-verification-status.repoTtl")
+  val emailVerificationStatusMaxAttemptsPerEmail: Int    = config.get[Int]("email-verification-status.maxAttemptsPerEmail")
+  val emailVerificationStatusMaxUniqueEmailsAllowed: Int =
+    config.get[Int]("email-verification-status.maxUniqueEmailsAllowed")
 
-  val isLocal: Boolean = config.get[Boolean]("is-local")
+  val isLocal: Boolean                              = config.get[Boolean]("is-local")
   val emailVerificationFrontendBaseUrlLocal: String = config.get[String]("email-verification-frontend.base-url.local")
 
 }
