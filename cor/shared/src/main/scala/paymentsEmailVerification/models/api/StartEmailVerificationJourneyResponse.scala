@@ -18,9 +18,9 @@ package paymentsEmailVerification.models.api
 
 import paymentsEmailVerification.models.{DerivedJson, EmailVerificationStateError}
 import play.api.libs.json.OFormat
-import zio.json.{DeriveJsonDecoder, DeriveJsonEncoder, JsonCodecConfiguration, JsonDecoder, JsonEncoder}
+import zio.json.{DeriveJsonDecoder, DeriveJsonEncoder, JsonDecoder, JsonEncoder}
 
-sealed trait StartEmailVerificationJourneyResponse
+sealed trait StartEmailVerificationJourneyResponse derives CanEqual
 
 object StartEmailVerificationJourneyResponse {
 

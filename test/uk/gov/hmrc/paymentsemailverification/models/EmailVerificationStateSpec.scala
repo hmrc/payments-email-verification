@@ -19,6 +19,7 @@ package uk.gov.hmrc.paymentsemailverification.models
 import paymentsEmailVerification.models.{EmailVerificationState, EmailVerificationStateError}
 import play.api.libs.json.*
 import uk.gov.hmrc.paymentsemailverification.testsupport.UnitSpec
+import uk.gov.hmrc.paymentsemailverification.testsupport.Givens.{jsResultCanEqual, jsValueCanEqual}
 
 class EmailVerificationStateSpec extends UnitSpec {
 

@@ -28,6 +28,7 @@ import uk.gov.hmrc.paymentsemailverification.models.{EmailVerificationStatus, En
 import uk.gov.hmrc.paymentsemailverification.repositories.EmailVerificationStatusRepo
 import uk.gov.hmrc.paymentsemailverification.testsupport.stubs.{AuthStub, EmailVerificationStub}
 import uk.gov.hmrc.paymentsemailverification.testsupport.{ItSpec, TestData}
+import uk.gov.hmrc.paymentsemailverification.testsupport.Givens.{localDateTimeCanEqual, uuidCanEqual}
 
 import java.time.temporal.ChronoUnit
 import java.time.{LocalDateTime, ZoneOffset}

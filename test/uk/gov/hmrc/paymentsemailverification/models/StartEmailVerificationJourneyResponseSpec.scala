@@ -20,6 +20,7 @@ import paymentsEmailVerification.models.EmailVerificationState
 import paymentsEmailVerification.models.api.StartEmailVerificationJourneyResponse
 import play.api.libs.json.*
 import uk.gov.hmrc.paymentsemailverification.testsupport.UnitSpec
+import uk.gov.hmrc.paymentsemailverification.testsupport.Givens.{jsResultCanEqual, jsValueCanEqual}
 
 class StartEmailVerificationJourneyResponseSpec extends UnitSpec {
 

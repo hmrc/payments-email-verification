@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,22 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.paymentsemailverification.crypto
+package uk.gov.hmrc.paymentsemailverification.testsupport
 
-import com.google.inject.{Inject, Singleton}
-import uk.gov.hmrc.crypto.{Decrypter, Encrypter}
+import play.api.libs.json.{JsResult, JsValue}
 
-sealed trait CryptoFormat derives CanEqual
+import java.time.LocalDateTime
+import java.util.UUID
+import scala.CanEqual.derived
 
-object CryptoFormat {
+object Givens {
 
-  @Singleton
-  final case class OperationalCryptoFormat @Inject() (crypto: Encrypter with Decrypter) extends CryptoFormat
+  given jsValueCanEqual: CanEqual[JsValue, JsValue] = CanEqual.derived
 
-  case object NoOpCryptoFormat extends CryptoFormat
+  given jsResultCanEqual[T]: CanEqual[JsResult[T], JsResult[T]] = CanEqual.derived
+
+  given uuidCanEqual: CanEqual[UUID, UUID] = CanEqual.derived
+
+  given localDateTimeCanEqual: CanEqual[LocalDateTime, LocalDateTime] = derived
 
 }

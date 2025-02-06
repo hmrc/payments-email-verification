@@ -23,7 +23,7 @@ import zio.json.{DeriveJsonDecoder, DeriveJsonEncoder}
 
 import scala.collection.immutable
 
-sealed trait EmailVerificationResult extends EnumEntry
+sealed trait EmailVerificationResult extends EnumEntry derives CanEqual
 
 object EmailVerificationResult extends Enum[EmailVerificationResult] {
 

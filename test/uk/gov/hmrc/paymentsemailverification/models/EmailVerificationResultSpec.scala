@@ -19,6 +19,7 @@ package uk.gov.hmrc.paymentsemailverification.models
 import paymentsEmailVerification.models.EmailVerificationResult
 import play.api.libs.json.{JsNumber, JsObject, JsString, JsSuccess, Json}
 import uk.gov.hmrc.paymentsemailverification.testsupport.UnitSpec
+import uk.gov.hmrc.paymentsemailverification.testsupport.Givens.{jsResultCanEqual, jsValueCanEqual}
 
 class EmailVerificationResultSpec extends UnitSpec {
 

@@ -32,7 +32,7 @@ final case class EmailVerificationStatus(
   verificationResult:              Option[EmailVerificationResult],
   createdAt:                       Instant,
   lastUpdated:                     Instant
-)
+) derives CanEqual
 
 object EmailVerificationStatus {
 
