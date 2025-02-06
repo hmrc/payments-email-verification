@@ -24,7 +24,7 @@ import scala.collection.immutable
 
 sealed trait EmailVerificationState extends EnumEntry
 
-sealed trait EmailVerificationStateError extends EmailVerificationState
+sealed trait EmailVerificationStateError extends EmailVerificationState with Product with Serializable
 
 object EmailVerificationState extends Enum[EmailVerificationState] {
 
@@ -40,15 +40,15 @@ object EmailVerificationState extends Enum[EmailVerificationState] {
     DeriveJsonDecoder.gen[EmailVerificationStateError]
   )
 
-  case object OkToBeVerified extends EmailVerificationState
+  final case class OkToBeVerified() extends EmailVerificationState
 
-  case object AlreadyVerified extends EmailVerificationStateError
+  final case class AlreadyVerified() extends EmailVerificationStateError
 
-  case object TooManyPasscodeAttempts extends EmailVerificationStateError
+  final case class TooManyPasscodeAttempts() extends EmailVerificationStateError
 
-  case object TooManyPasscodeJourneysStarted extends EmailVerificationStateError
+  final case class TooManyPasscodeJourneysStarted() extends EmailVerificationStateError
 
-  case object TooManyDifferentEmailAddresses extends EmailVerificationStateError
+  final case class TooManyDifferentEmailAddresses() extends EmailVerificationStateError
 
   override val values: immutable.IndexedSeq[EmailVerificationState] = findValues
 

@@ -28,9 +28,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class EmailVerificationStatusService @Inject() (
-    emailVerificationStatusRepo: EmailVerificationStatusRepo,
-    correlationIdGenerator:      CorrelationIdGenerator,
-    clock:                       Clock
+  emailVerificationStatusRepo: EmailVerificationStatusRepo,
+  correlationIdGenerator:      CorrelationIdGenerator,
+  clock:                       Clock
 )(using ExecutionContext) {
 
   /*
@@ -41,7 +41,7 @@ class EmailVerificationStatusService @Inject() (
 
   given Ordering[LocalDateTime] = _ compareTo _
 
-  def findEarliestCreatedAt(ggCredId: GGCredId): Future[GetEarliestCreatedAtTimeResponse] = {
+  def findEarliestCreatedAt(ggCredId: GGCredId): Future[GetEarliestCreatedAtTimeResponse] =
     find(ggCredId).map { (statuses: List[EmailVerificationStatus]) =>
       val result = statuses
         .map(status => LocalDateTime.ofInstant(status.createdAt, ZoneOffset.UTC))
@@ -49,7 +49,6 @@ class EmailVerificationStatusService @Inject() (
 
       GetEarliestCreatedAtTimeResponse(result)
     }
-  }
 
   /*
    * increment the verification attempts for EmailVerificationStatus entry that matches given credId and email,
@@ -60,16 +59,17 @@ class EmailVerificationStatusService @Inject() (
 
     findEmailVerificationStatuses(credId).flatMap {
       _.find(_.email === encryptedEmail)
-        .fold{
-          upsert(EmailVerificationStatus(correlationIdGenerator.nextCorrelationId(), credId, encryptedEmail, None, clock))
-        } {
-          emailVerificationStatus =>
-            upsert(
-              emailVerificationStatus.copy(
-                numberOfPasscodeJourneysStarted = emailVerificationStatus.numberOfPasscodeJourneysStarted.increment,
-                lastUpdated                     = Instant.now(clock)
-              )
+        .fold {
+          upsert(
+            EmailVerificationStatus(correlationIdGenerator.nextCorrelationId(), credId, encryptedEmail, None, clock)
+          )
+        } { emailVerificationStatus =>
+          upsert(
+            emailVerificationStatus.copy(
+              numberOfPasscodeJourneysStarted = emailVerificationStatus.numberOfPasscodeJourneysStarted.increment,
+              lastUpdated = Instant.now(clock)
             )
+          )
         }
     }
   }
@@ -78,19 +78,32 @@ class EmailVerificationStatusService @Inject() (
    * update the emailVerificationResult for EmailVerificationStatus entry that matches given credId and email,
    * or create one if it doesn't exist
    */
-  def updateEmailVerificationStatusResult(credId: GGCredId, email: Email, emailVerificationResult: EmailVerificationResult): Future[Unit] = {
+  def updateEmailVerificationStatusResult(
+    credId:                  GGCredId,
+    email:                   Email,
+    emailVerificationResult: EmailVerificationResult
+  ): Future[Unit] = {
     val encryptedEmail = EncryptedEmail.fromEmail(email)
 
     findEmailVerificationStatuses(credId).flatMap {
       _.find(_.email === encryptedEmail)
         .fold {
-          upsert(EmailVerificationStatus(correlationIdGenerator.nextCorrelationId(), credId, encryptedEmail, Some(emailVerificationResult), clock))
-        } {
-          emailVerificationStatus =>
-            upsert(emailVerificationStatus.copy(
+          upsert(
+            EmailVerificationStatus(
+              correlationIdGenerator.nextCorrelationId(),
+              credId,
+              encryptedEmail,
+              Some(emailVerificationResult),
+              clock
+            )
+          )
+        } { emailVerificationStatus =>
+          upsert(
+            emailVerificationStatus.copy(
               verificationResult = Some(emailVerificationResult),
-              lastUpdated        = Instant.now(clock)
-            ))
+              lastUpdated = Instant.now(clock)
+            )
+          )
         }
     }
   }

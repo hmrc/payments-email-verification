@@ -29,14 +29,15 @@ object EmailVerificationStub {
 
   private val requestVerificationUrl: String = "/email-verification/verify-email"
 
-  private def getVerificationStatusUrl(ggCredId: GGCredId): String = s"/email-verification/verification-status/${ggCredId.value}"
+  private def getVerificationStatusUrl(ggCredId: GGCredId): String =
+    s"/email-verification/verification-status/${ggCredId.value}"
 
   type HttpStatus = Int
 
   def requestEmailVerification(result: Either[HttpStatus, RequestEmailVerificationSuccess]): StubMapping =
     stubFor(
       post(urlPathEqualTo(requestVerificationUrl))
-        .willReturn{
+        .willReturn {
           result.fold(
             status => aResponse().withStatus(status),
             { success =>
@@ -48,8 +49,8 @@ object EmailVerificationStub {
     )
 
   def verifyRequestEmailVerification(
-      request:  StartEmailVerificationJourneyRequest,
-      ggCredId: GGCredId
+    request:  StartEmailVerificationJourneyRequest,
+    ggCredId: GGCredId
   ): Unit =
     verify(
       exactly(1),
@@ -78,18 +79,17 @@ object EmailVerificationStub {
   def getVerificationResult(ggCredId: GGCredId, result: Either[HttpStatus, List[EmailResult]]): StubMapping =
     stubFor(
       get(urlPathEqualTo(getVerificationStatusUrl(ggCredId)))
-        .willReturn{
+        .willReturn {
           result.fold(
             status => aResponse().withStatus(status),
             { success =>
-              val emailsJson = success.map(emailStatus =>
-                s"""{
+              val emailsJson = success.map(emailStatus => s"""{
                    |  "emailAddress": "${emailStatus.emailAddress}",
                    |  "verified": ${emailStatus.verified.toString},
                    |  "locked": ${emailStatus.locked.toString}
                    |}
                    |""".stripMargin)
-              val body = Json.parse(
+              val body       = Json.parse(
                 s"""
                    |{
                    |  "emails": [ ${emailsJson.mkString(",")} ]

@@ -56,21 +56,23 @@ class EmailVerificationControllerSpec extends ItSpec {
       "en"
     )
 
-      def emailVerificationStatus(ggCredId: GGCredId, email: Email): EmailVerificationStatus = EmailVerificationStatus(
-        _id                             = UUID.randomUUID(),
-        credId                          = ggCredId,
-        email                           = EncryptedEmail(SensitiveString(email.value)),
-        numberOfPasscodeJourneysStarted = NumberOfPasscodeJourneysStarted(1),
-        verificationResult              = None,
-        createdAt                       = TestData.frozenInstant,
-        lastUpdated                     = TestData.frozenInstant
-      )
+    def emailVerificationStatus(ggCredId: GGCredId, email: Email): EmailVerificationStatus = EmailVerificationStatus(
+      _id = UUID.randomUUID(),
+      credId = ggCredId,
+      email = EncryptedEmail(SensitiveString(email.value)),
+      numberOfPasscodeJourneysStarted = NumberOfPasscodeJourneysStarted(1),
+      verificationResult = None,
+      createdAt = TestData.frozenInstant,
+      lastUpdated = TestData.frozenInstant
+    )
 
-    behave like authenticatedEndpointBehaviour(connector.startEmailVerification(startEmailVerificationJourneyRequest)(using _))
+    behave like authenticatedEndpointBehaviour(
+      connector.startEmailVerification(startEmailVerificationJourneyRequest)(using _)
+    )
 
     "return a redirect url if a journey is successfully started" in {
       val redirectUri: String = "/redirect"
-      val id = correlationIdGenerator.readNextCorrelationId()
+      val id                  = correlationIdGenerator.readNextCorrelationId()
 
       AuthStub.authorise()
       EmailVerificationStub.requestEmailVerification(Right(RequestEmailVerificationSuccess(redirectUri)))
@@ -104,7 +106,9 @@ class EmailVerificationControllerSpec extends ItSpec {
       EmailVerificationStub.requestEmailVerification(Left(UNAUTHORIZED))
 
       val result = connector.startEmailVerification(startEmailVerificationJourneyRequest)
-      await(result) shouldBe StartEmailVerificationJourneyResponse.Error(EmailVerificationState.TooManyPasscodeAttempts)
+      await(result) shouldBe StartEmailVerificationJourneyResponse.Error(
+        EmailVerificationState.TooManyPasscodeAttempts()
+      )
 
       EmailVerificationStub.verifyRequestEmailVerification(startEmailVerificationJourneyRequest, TestData.ggCredId)
     }
@@ -114,12 +118,12 @@ class EmailVerificationControllerSpec extends ItSpec {
 
       val oldEmailVerificationStatus =
         emailVerificationStatus(TestData.ggCredId, startEmailVerificationJourneyRequest.email)
-          .copy(verificationResult = Some(EmailVerificationResult.Verified))
+          .copy(verificationResult = Some(EmailVerificationResult.Verified()))
 
       emailVerificationStatusRepo.upsert(oldEmailVerificationStatus).futureValue
 
       val result = connector.startEmailVerification(startEmailVerificationJourneyRequest)
-      await(result) shouldBe StartEmailVerificationJourneyResponse.Error(EmailVerificationState.AlreadyVerified)
+      await(result) shouldBe StartEmailVerificationJourneyResponse.Error(EmailVerificationState.AlreadyVerified())
 
       await(emailVerificationStatusRepo.findAllEntries(TestData.ggCredId)) shouldBe List(
         oldEmailVerificationStatus.copy(numberOfPasscodeJourneysStarted = NumberOfPasscodeJourneysStarted(2))
@@ -131,22 +135,34 @@ class EmailVerificationControllerSpec extends ItSpec {
     "return 'TooManyPasscodeAttempts' if that is the status in mongo" in {
       AuthStub.authorise()
 
-      emailVerificationStatusRepo.upsert(emailVerificationStatus(TestData.ggCredId, startEmailVerificationJourneyRequest.email)
-        .copy(verificationResult = Some(EmailVerificationResult.Locked))).futureValue
+      emailVerificationStatusRepo
+        .upsert(
+          emailVerificationStatus(TestData.ggCredId, startEmailVerificationJourneyRequest.email)
+            .copy(verificationResult = Some(EmailVerificationResult.Locked()))
+        )
+        .futureValue
 
       val result = connector.startEmailVerification(startEmailVerificationJourneyRequest)
-      await(result) shouldBe StartEmailVerificationJourneyResponse.Error(EmailVerificationState.TooManyPasscodeAttempts)
+      await(result) shouldBe StartEmailVerificationJourneyResponse.Error(
+        EmailVerificationState.TooManyPasscodeAttempts()
+      )
       EmailVerificationStub.verifyNoneRequestVerification()
     }
 
     "return 'TooManyPasscodeJourneysStarted' if that is the status in mongo" in {
       AuthStub.authorise()
 
-      emailVerificationStatusRepo.upsert(emailVerificationStatus(TestData.ggCredId, startEmailVerificationJourneyRequest.email)
-        .copy(numberOfPasscodeJourneysStarted = NumberOfPasscodeJourneysStarted(5))).futureValue
+      emailVerificationStatusRepo
+        .upsert(
+          emailVerificationStatus(TestData.ggCredId, startEmailVerificationJourneyRequest.email)
+            .copy(numberOfPasscodeJourneysStarted = NumberOfPasscodeJourneysStarted(5))
+        )
+        .futureValue
 
       val result = connector.startEmailVerification(startEmailVerificationJourneyRequest)
-      await(result) shouldBe StartEmailVerificationJourneyResponse.Error(EmailVerificationState.TooManyPasscodeJourneysStarted)
+      await(result) shouldBe StartEmailVerificationJourneyResponse.Error(
+        EmailVerificationState.TooManyPasscodeJourneysStarted()
+      )
       EmailVerificationStub.verifyNoneRequestVerification()
     }
 
@@ -154,25 +170,29 @@ class EmailVerificationControllerSpec extends ItSpec {
       AuthStub.authorise()
 
       val emailVerificationStatus: EmailVerificationStatus = EmailVerificationStatus(
-        _id                             = UUID.randomUUID(),
-        credId                          = TestData.ggCredId,
-        email                           = EncryptedEmail(SensitiveString(startEmailVerificationJourneyRequest.email.value)),
+        _id = UUID.randomUUID(),
+        credId = TestData.ggCredId,
+        email = EncryptedEmail(SensitiveString(startEmailVerificationJourneyRequest.email.value)),
         numberOfPasscodeJourneysStarted = NumberOfPasscodeJourneysStarted(1),
-        verificationResult              = None,
-        createdAt                       = TestData.frozenInstant,
-        lastUpdated                     = TestData.frozenInstant
+        verificationResult = None,
+        createdAt = TestData.frozenInstant,
+        lastUpdated = TestData.frozenInstant
       )
-      val nineOtherEntries: List[EmailVerificationStatus] =
-        (1 to 9).toList.map(_ => emailVerificationStatus.copy(
-          _id   = UUID.randomUUID(),
-          email = EncryptedEmail(SensitiveString(s"email${UUID.randomUUID().toString}@test.com"))
-        ))
+      val nineOtherEntries: List[EmailVerificationStatus]  =
+        (1 to 9).toList.map(_ =>
+          emailVerificationStatus.copy(
+            _id = UUID.randomUUID(),
+            email = EncryptedEmail(SensitiveString(s"email${UUID.randomUUID().toString}@test.com"))
+          )
+        )
 
       (emailVerificationStatus :: nineOtherEntries).foreach(emailVerificationStatusRepo.upsert(_).futureValue)
       emailVerificationStatusRepo.findAllEntries(TestData.ggCredId).futureValue.size shouldBe 10
 
       val result = connector.startEmailVerification(startEmailVerificationJourneyRequest)
-      await(result) shouldBe StartEmailVerificationJourneyResponse.Error(EmailVerificationState.TooManyDifferentEmailAddresses)
+      await(result) shouldBe StartEmailVerificationJourneyResponse.Error(
+        EmailVerificationState.TooManyDifferentEmailAddresses()
+      )
       EmailVerificationStub.verifyNoneRequestVerification()
     }
 
@@ -185,9 +205,9 @@ class EmailVerificationControllerSpec extends ItSpec {
     )
 
     "return a 'Verified' response if the email address has been verified with the GG cred id" in {
-      val email = Email(s"email${UUID.randomUUID().toString}@test.com")
+      val email            = Email(s"email${UUID.randomUUID().toString}@test.com")
       val getResultRequest = GetEmailVerificationResultRequest(email)
-      val id = correlationIdGenerator.readNextCorrelationId()
+      val id               = correlationIdGenerator.readNextCorrelationId()
 
       AuthStub.authorise()
       EmailVerificationStub.getVerificationResult(
@@ -196,30 +216,30 @@ class EmailVerificationControllerSpec extends ItSpec {
       )
 
       val result = connector.getEmailVerificationResult(getResultRequest)
-      await(result) shouldBe EmailVerificationResult.Verified
+      await(result) shouldBe EmailVerificationResult.Verified()
 
       val emailVerificationStatus = await(emailVerificationStatusRepo.findAllEntries(TestData.ggCredId))
       emailVerificationStatus.size shouldBe 1
       emailVerificationStatus.headOption.map(_._id) shouldBe Some(id.value)
       emailVerificationStatus.headOption.map(_.email.value.decryptedValue) shouldBe Some(email.value)
       emailVerificationStatus.headOption.map(_.numberOfPasscodeJourneysStarted.value) shouldBe Some(1)
-      emailVerificationStatus.headOption.flatMap(_.verificationResult) shouldBe Some(EmailVerificationResult.Verified)
+      emailVerificationStatus.headOption.flatMap(_.verificationResult) shouldBe Some(EmailVerificationResult.Verified())
 
       EmailVerificationStub.verifyNoneGetVerificationStatus(TestData.ggCredId)
     }
 
     "return a 'TooManyPasscodeAttempts' response if the email address has been locked with the GG cred id" in {
-      val email = Email(s"email${UUID.randomUUID().toString}@test.com")
-      val getResultRequest = GetEmailVerificationResultRequest(email)
+      val email                      = Email(s"email${UUID.randomUUID().toString}@test.com")
+      val getResultRequest           = GetEmailVerificationResultRequest(email)
       // test an update to an existing status in mongo works
       val oldEmailVerificationStatus = EmailVerificationStatus(
-        _id                             = UUID.randomUUID(),
-        credId                          = TestData.ggCredId,
-        email                           = EncryptedEmail(SensitiveString(email.value)),
+        _id = UUID.randomUUID(),
+        credId = TestData.ggCredId,
+        email = EncryptedEmail(SensitiveString(email.value)),
         numberOfPasscodeJourneysStarted = NumberOfPasscodeJourneysStarted(1),
-        verificationResult              = Some(EmailVerificationResult.Verified),
-        createdAt                       = TestData.frozenInstant,
-        lastUpdated                     = TestData.frozenInstant.minusSeconds(100L),
+        verificationResult = Some(EmailVerificationResult.Verified()),
+        createdAt = TestData.frozenInstant,
+        lastUpdated = TestData.frozenInstant.minusSeconds(100L)
       )
 
       AuthStub.authorise()
@@ -231,12 +251,12 @@ class EmailVerificationControllerSpec extends ItSpec {
       await(emailVerificationStatusRepo.upsert(oldEmailVerificationStatus))
 
       val result = connector.getEmailVerificationResult(getResultRequest)
-      await(result) shouldBe EmailVerificationResult.Locked
+      await(result) shouldBe EmailVerificationResult.Locked()
 
       await(emailVerificationStatusRepo.findAllEntries(TestData.ggCredId)) shouldBe List(
         oldEmailVerificationStatus.copy(
-          verificationResult = Some(EmailVerificationResult.Locked),
-          lastUpdated        = TestData.frozenInstant
+          verificationResult = Some(EmailVerificationResult.Locked()),
+          lastUpdated = TestData.frozenInstant
         )
       )
 
@@ -249,13 +269,13 @@ class EmailVerificationControllerSpec extends ItSpec {
 
       val getResultRequest = GetEmailVerificationResultRequest(email)
 
-        def testIsUpstreamErrorResponse(result: Future[EmailVerificationResult], expectedStatusCode: Int): Unit = {
-          result.failed.futureValue match {
-            case e: UpstreamErrorResponse => e.statusCode shouldBe expectedStatusCode
-            case e                        => fail(s"Expected UpstreamErrorResponse but got ${e.toString}")
-          }
-          ()
+      def testIsUpstreamErrorResponse(result: Future[EmailVerificationResult], expectedStatusCode: Int): Unit = {
+        result.failed.futureValue match {
+          case e: UpstreamErrorResponse => e.statusCode shouldBe expectedStatusCode
+          case e                        => fail(s"Expected UpstreamErrorResponse but got ${e.toString}")
         }
+        ()
+      }
 
       "a result cannot be found for the given email address" in {
         AuthStub.authorise()
@@ -296,9 +316,9 @@ class EmailVerificationControllerSpec extends ItSpec {
     }
     "is insensitive to email case" in {
       val emailWithUpperCase = s"Email${UUID.randomUUID().toString}@Test.Com"
-      val emailCaseLowered = emailWithUpperCase.toLowerCase(Locale.UK)
-      val getResultRequest = GetEmailVerificationResultRequest(Email(emailWithUpperCase))
-      val id = correlationIdGenerator.readNextCorrelationId()
+      val emailCaseLowered   = emailWithUpperCase.toLowerCase(Locale.UK)
+      val getResultRequest   = GetEmailVerificationResultRequest(Email(emailWithUpperCase))
+      val id                 = correlationIdGenerator.readNextCorrelationId()
 
       AuthStub.authorise()
       EmailVerificationStub.getVerificationResult(
@@ -307,14 +327,14 @@ class EmailVerificationControllerSpec extends ItSpec {
       )
 
       val result = connector.getEmailVerificationResult(getResultRequest)
-      await(result) shouldBe EmailVerificationResult.Verified
+      await(result) shouldBe EmailVerificationResult.Verified()
 
       val emailVerificationStatus = await(emailVerificationStatusRepo.findAllEntries(TestData.ggCredId))
       emailVerificationStatus.size shouldBe 1
       emailVerificationStatus.headOption.map(_._id) shouldBe Some(id.value)
       emailVerificationStatus.headOption.map(_.email.value.decryptedValue) shouldBe Some(emailWithUpperCase)
       emailVerificationStatus.headOption.map(_.numberOfPasscodeJourneysStarted.value) shouldBe Some(1)
-      emailVerificationStatus.headOption.flatMap(_.verificationResult) shouldBe Some(EmailVerificationResult.Verified)
+      emailVerificationStatus.headOption.flatMap(_.verificationResult) shouldBe Some(EmailVerificationResult.Verified())
 
       EmailVerificationStub.verifyNoneGetVerificationStatus(TestData.ggCredId)
     }
@@ -329,22 +349,22 @@ class EmailVerificationControllerSpec extends ItSpec {
       AuthStub.authorise()
 
       val emailVerificationStatusEarlier: EmailVerificationStatus = EmailVerificationStatus(
-        _id                             = UUID.randomUUID(),
-        credId                          = TestData.ggCredId,
-        email                           = EncryptedEmail(SensitiveString(s"email${UUID.randomUUID().toString}@test.com")),
+        _id = UUID.randomUUID(),
+        credId = TestData.ggCredId,
+        email = EncryptedEmail(SensitiveString(s"email${UUID.randomUUID().toString}@test.com")),
         numberOfPasscodeJourneysStarted = NumberOfPasscodeJourneysStarted(1),
-        verificationResult              = None,
-        createdAt                       = TestData.frozenInstant,
-        lastUpdated                     = TestData.frozenInstant
+        verificationResult = None,
+        createdAt = TestData.frozenInstant,
+        lastUpdated = TestData.frozenInstant
       )
-      val emailVerificationStatusLater: EmailVerificationStatus = EmailVerificationStatus(
-        _id                             = UUID.randomUUID(),
-        credId                          = TestData.ggCredId,
-        email                           = EncryptedEmail(SensitiveString(s"email${UUID.randomUUID().toString}@test.com")),
+      val emailVerificationStatusLater: EmailVerificationStatus   = EmailVerificationStatus(
+        _id = UUID.randomUUID(),
+        credId = TestData.ggCredId,
+        email = EncryptedEmail(SensitiveString(s"email${UUID.randomUUID().toString}@test.com")),
         numberOfPasscodeJourneysStarted = NumberOfPasscodeJourneysStarted(1),
-        verificationResult              = None,
-        createdAt                       = emailVerificationStatusEarlier.createdAt.plus(1, ChronoUnit.MINUTES),
-        lastUpdated                     = TestData.frozenInstant
+        verificationResult = None,
+        createdAt = emailVerificationStatusEarlier.createdAt.plus(1, ChronoUnit.MINUTES),
+        lastUpdated = TestData.frozenInstant
       )
 
       emailVerificationStatusRepo.upsert(emailVerificationStatusEarlier).futureValue

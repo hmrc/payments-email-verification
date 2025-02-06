@@ -21,7 +21,7 @@ import play.api.libs.json.{Json, OFormat}
 import java.time.LocalDateTime
 
 final case class GetEarliestCreatedAtTimeResponse(
-    earliestCreatedAtTime: Option[LocalDateTime]
+  earliestCreatedAtTime: Option[LocalDateTime]
 )
 
 object GetEarliestCreatedAtTimeResponse {

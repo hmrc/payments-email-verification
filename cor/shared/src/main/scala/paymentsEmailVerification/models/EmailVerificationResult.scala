@@ -35,11 +35,10 @@ object EmailVerificationResult extends Enum[EmailVerificationResult] {
     DeriveJsonDecoder.gen[EmailVerificationResult]
   )
 
-  case object Verified extends EmailVerificationResult
+  final case class Verified() extends EmailVerificationResult
 
-  case object Locked extends EmailVerificationResult
+  final case class Locked() extends EmailVerificationResult
 
   override val values: immutable.IndexedSeq[EmailVerificationResult] = findValues
 
 }
-

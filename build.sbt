@@ -25,6 +25,7 @@ lazy val commonSettings = Seq[SettingsDefinition](
   shellPrompt := ShellPrompt(version.value),
   buildInfoPackage := name.value.toLowerCase().replaceAllLiterally("-", ""),
   (Compile / doc / scalacOptions) := Seq(), //this will allow to have warnings in `doc` task and not fail the build
+  scalafmtOnCompile := true,
   scalaSettings,
   uk.gov.hmrc.DefaultBuildSettings.defaultSettings(),
   WartRemoverSettings.wartRemoverSettings,

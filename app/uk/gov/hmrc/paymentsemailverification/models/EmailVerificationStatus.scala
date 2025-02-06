@@ -25,13 +25,13 @@ import java.time.{Clock, Instant}
 import java.util.UUID
 
 final case class EmailVerificationStatus(
-    _id:                             UUID,
-    credId:                          GGCredId,
-    email:                           EncryptedEmail,
-    numberOfPasscodeJourneysStarted: NumberOfPasscodeJourneysStarted,
-    verificationResult:              Option[EmailVerificationResult],
-    createdAt:                       Instant,
-    lastUpdated:                     Instant
+  _id:                             UUID,
+  credId:                          GGCredId,
+  email:                           EncryptedEmail,
+  numberOfPasscodeJourneysStarted: NumberOfPasscodeJourneysStarted,
+  verificationResult:              Option[EmailVerificationResult],
+  createdAt:                       Instant,
+  lastUpdated:                     Instant
 )
 
 object EmailVerificationStatus {
@@ -39,16 +39,15 @@ object EmailVerificationStatus {
   given Format[Instant] = MongoJavatimeFormats.instantFormat
 
   @SuppressWarnings(Array("org.wartremover.warts.Any"))
-  given format(using cryptoFormat: CryptoFormat): OFormat[EmailVerificationStatus] = {
+  given format(using cryptoFormat: CryptoFormat): OFormat[EmailVerificationStatus] =
     Json.format[EmailVerificationStatus]
-  }
 
   def apply(
-      correlationId:      CorrelationId,
-      credId:             GGCredId,
-      email:              EncryptedEmail,
-      verificationResult: Option[EmailVerificationResult],
-      clock:              Clock
+    correlationId:      CorrelationId,
+    credId:             GGCredId,
+    email:              EncryptedEmail,
+    verificationResult: Option[EmailVerificationResult],
+    clock:              Clock
   ): EmailVerificationStatus =
     EmailVerificationStatus(
       correlationId.value,

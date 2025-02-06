@@ -29,8 +29,9 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PaymentsEmailVerificationConnector @Inject() (httpClient: HttpClientV2, servicesConfig: ServicesConfig)(
-    using ExecutionContext) {
+class PaymentsEmailVerificationConnector @Inject() (httpClient: HttpClientV2, servicesConfig: ServicesConfig)(using
+  ExecutionContext
+) {
 
   private val baseUrl: String = servicesConfig.baseUrl("payments-email-verification")
 
@@ -40,10 +41,17 @@ class PaymentsEmailVerificationConnector @Inject() (httpClient: HttpClientV2, se
 
   private val getEarliestCreatedAtTime = s"$baseUrl/payments-email-verification/earliest-created-at"
 
-  def startEmailVerification(request: StartEmailVerificationJourneyRequest)(using HeaderCarrier): Future[StartEmailVerificationJourneyResponse] =
-    httpClient.post(url"$startEmailVerificationUrl").withBody(Json.toJson(request)).execute[StartEmailVerificationJourneyResponse]
+  def startEmailVerification(
+    request: StartEmailVerificationJourneyRequest
+  )(using HeaderCarrier): Future[StartEmailVerificationJourneyResponse] =
+    httpClient
+      .post(url"$startEmailVerificationUrl")
+      .withBody(Json.toJson(request))
+      .execute[StartEmailVerificationJourneyResponse]
 
-  def getEmailVerificationResult(request: GetEmailVerificationResultRequest)(using HeaderCarrier): Future[EmailVerificationResult] =
+  def getEmailVerificationResult(request: GetEmailVerificationResultRequest)(using
+    HeaderCarrier
+  ): Future[EmailVerificationResult] =
     httpClient.post(url"$getEmailVerificationResultUrl").withBody(Json.toJson(request)).execute[EmailVerificationResult]
 
   def getEarliestCreatedAtTime()(using HeaderCarrier): Future[GetEarliestCreatedAtTimeResponse] =

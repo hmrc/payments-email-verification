@@ -23,7 +23,8 @@ import uk.gov.hmrc.crypto.{Crypted, Decrypter, Encrypter, PlainBytes, PlainConte
 @Singleton
 class Crypto @Inject() (configuration: Configuration) extends Encrypter with Decrypter {
 
-  implicit val aesCrypto: Encrypter with Decrypter = SymmetricCryptoFactory.aesGcmCryptoFromConfig("crypto", configuration.underlying)
+  implicit val aesCrypto: Encrypter with Decrypter =
+    SymmetricCryptoFactory.aesGcmCryptoFromConfig("crypto", configuration.underlying)
 
   override def encrypt(plain: PlainContent): Crypted = aesCrypto.encrypt(plain)
 

@@ -25,9 +25,11 @@ import java.time.Instant
 object TestData {
 
   def encryptString(s: String, encrypter: Encrypter): String =
-    encrypter.encrypt(
-      PlainText("\"" + SensitiveString(s).decryptedValue + "\"")
-    ).value
+    encrypter
+      .encrypt(
+        PlainText("\"" + SensitiveString(s).decryptedValue + "\"")
+      )
+      .value
 
   val ggCredId: GGCredId = GGCredId("cred-123")
 

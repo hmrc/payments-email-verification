@@ -38,11 +38,7 @@ import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Singleton
 import scala.concurrent.duration._
 
-trait ItSpec
-  extends AnyFreeSpecLike,
-    RichMatchers,
-    GuiceOneServerPerSuite,
-    WireMockSupport { self =>
+trait ItSpec extends AnyFreeSpecLike, RichMatchers, GuiceOneServerPerSuite, WireMockSupport { self =>
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -76,8 +72,10 @@ trait ItSpec
     @Provides
     @Singleton
     def testCorrelationIdGenerator(): TestCorrelationIdGenerator = {
-      val randomPart: String = UUID.randomUUID().toString.take(8)
-      val correlationIdPrefix: TestCorrelationIdPrefix = TestCorrelationIdPrefix(s"$randomPart-843f-4988-89c6-d4d3e2e91e26")
+      val randomPart: String                           = UUID.randomUUID().toString.take(8)
+      val correlationIdPrefix: TestCorrelationIdPrefix = TestCorrelationIdPrefix(
+        s"$randomPart-843f-4988-89c6-d4d3e2e91e26"
+      )
       new TestCorrelationIdGenerator(correlationIdPrefix)
     }
   }
@@ -86,21 +84,21 @@ trait ItSpec
 
   val testServerPort: Int = 19001
 
-  val baseUrl: String = s"http://localhost:${testServerPort.toString}"
+  val baseUrl: String      = s"http://localhost:${testServerPort.toString}"
   val databaseName: String = "payments-email-verification-it"
 
   def conf: Map[String, Any] = Map(
-    "mongodb.uri" -> s"mongodb://localhost:27017/$databaseName",
+    "mongodb.uri"                                                -> s"mongodb://localhost:27017/$databaseName",
     "microservice.services.payments-email-verification.protocol" -> "http",
-    "microservice.services.payments-email-verification.host" -> "localhost",
-    "microservice.services.payments-email-verification.port" -> testServerPort,
-    "microservice.services.auth.port" -> WireMockSupport.port,
-    "microservice.services.email-verification.port" -> WireMockSupport.port,
-    "auditing.enabled" -> false,
-    "auditing.traceRequests" -> false
+    "microservice.services.payments-email-verification.host"     -> "localhost",
+    "microservice.services.payments-email-verification.port"     -> testServerPort,
+    "microservice.services.auth.port"                            -> WireMockSupport.port,
+    "microservice.services.email-verification.port"              -> WireMockSupport.port,
+    "auditing.enabled"                                           -> false,
+    "auditing.traceRequests"                                     -> false
   )
 
-  //in tests use `app`
+  // in tests use `app`
   override def fakeApplication(): Application = new GuiceApplicationBuilder()
     .configure(conf)
     .overrides(GuiceableModule.fromGuiceModules(Seq(overridingsModule)))
@@ -108,7 +106,7 @@ trait ItSpec
 
   object TestServerFactory extends DefaultTestServerFactory {
     override protected def serverConfig(app: Application): ServerConfig = {
-      val sc = ServerConfig(port    = Some(testServerPort), sslPort = Some(0), mode = Mode.Test, rootDir = app.path)
+      val sc = ServerConfig(port = Some(testServerPort), sslPort = Some(0), mode = Mode.Test, rootDir = app.path)
       sc.copy(configuration = sc.configuration.withFallback(overrideServerConfiguration(app)))
     }
   }
@@ -122,12 +120,14 @@ final case class TestCorrelationIdPrefix(value: String)
 
 class TestCorrelationIdGenerator(testCorrelationIdPrefix: TestCorrelationIdPrefix) extends CorrelationIdGenerator {
   private val correlationIdIterator: Iterator[CorrelationId] =
-    LazyList.from(0).map(i => CorrelationId(UUID.fromString(s"${testCorrelationIdPrefix.value.dropRight(1)}${i.toString}"))).iterator
-  private val nextCorrelationIdCached = new AtomicReference[CorrelationId](correlationIdIterator.next())
+    LazyList
+      .from(0)
+      .map(i => CorrelationId(UUID.fromString(s"${testCorrelationIdPrefix.value.dropRight(1)}${i.toString}")))
+      .iterator
+  private val nextCorrelationIdCached                        = new AtomicReference[CorrelationId](correlationIdIterator.next())
 
   def readNextCorrelationId(): CorrelationId = nextCorrelationIdCached.get()
 
-  override def nextCorrelationId(): CorrelationId = {
+  override def nextCorrelationId(): CorrelationId =
     nextCorrelationIdCached.getAndSet(correlationIdIterator.next())
-  }
 }

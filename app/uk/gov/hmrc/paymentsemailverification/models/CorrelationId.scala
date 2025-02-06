@@ -19,4 +19,3 @@ package uk.gov.hmrc.paymentsemailverification.models
 import java.util.UUID
 
 final case class CorrelationId(value: UUID)
-

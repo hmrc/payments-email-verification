@@ -32,29 +32,32 @@ import scala.concurrent.{ExecutionContext, Future}
 final case class AuthenticatedRequest[A](val request: Request[A], ggCredId: GGCredId) extends WrappedRequest[A](request)
 
 class AuthenticatedActionRefiner @Inject() (
-    val authConnector: AuthConnector,
-    cc:                MessagesControllerComponents
+  val authConnector: AuthConnector,
+  cc:                MessagesControllerComponents
 )(using ExecutionContext)
-  extends ActionRefiner[Request, AuthenticatedRequest], BackendHeaderCarrierProvider, AuthorisedFunctions {
+    extends ActionRefiner[Request, AuthenticatedRequest],
+      BackendHeaderCarrierProvider,
+      AuthorisedFunctions {
 
   private val logger = Logger(getClass)
 
-  override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
-    authorised(AuthProviders(GovernmentGateway)).retrieve(Retrievals.credentials) {
-      case None =>
-        Errors.throwServerErrorException("Could not find credentials")
+  override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] =
+    authorised(AuthProviders(GovernmentGateway))
+      .retrieve(Retrievals.credentials) {
+        case None =>
+          Errors.throwServerErrorException("Could not find credentials")
 
-      case Some(ggCreds) =>
-        Future.successful(Right(AuthenticatedRequest(request, GGCredId(ggCreds.providerId))))
-    }(hc(request)).recover {
-      case _: NoActiveSession =>
-        Left(Unauthorized)
+        case Some(ggCreds) =>
+          Future.successful(Right(AuthenticatedRequest(request, GGCredId(ggCreds.providerId))))
+      }(hc(request))
+      .recover {
+        case _: NoActiveSession =>
+          Left(Unauthorized)
 
-      case e: AuthorisationException =>
-        logger.warn(s"Unauthorised because of ${e.reason}, please investigate why", e)
-        Left(InternalServerError)
-    }
-  }
+        case e: AuthorisationException =>
+          logger.warn(s"Unauthorised because of ${e.reason}, please investigate why", e)
+          Left(InternalServerError)
+      }
 
   override protected def executionContext: ExecutionContext = cc.executionContext
 
