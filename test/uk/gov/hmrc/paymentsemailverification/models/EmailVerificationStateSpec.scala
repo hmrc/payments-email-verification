@@ -29,13 +29,13 @@ class EmailVerificationStateSpec extends UnitSpec {
   val tooManyPasscodeJourneysStartedJson = Json.parse("""{ "TooManyPasscodeJourneysStarted": {} }""")
   val tooManyDifferentEmailAddressesJson = Json.parse("""{ "TooManyDifferentEmailAddresses": {} }""")
 
-  val okToBeVerified: EmailVerificationState                      = EmailVerificationState.OkToBeVerified()
-  val alreadyVerified: EmailVerificationStateError                = EmailVerificationState.AlreadyVerified()
-  val tooManyPasscodeAttempts: EmailVerificationStateError        = EmailVerificationState.TooManyPasscodeAttempts()
+  val okToBeVerified: EmailVerificationState                      = EmailVerificationState.OkToBeVerified
+  val alreadyVerified: EmailVerificationStateError                = EmailVerificationState.AlreadyVerified
+  val tooManyPasscodeAttempts: EmailVerificationStateError        = EmailVerificationState.TooManyPasscodeAttempts
   val tooManyPasscodeJourneysStarted: EmailVerificationStateError =
-    EmailVerificationState.TooManyPasscodeJourneysStarted()
+    EmailVerificationState.TooManyPasscodeJourneysStarted
   val tooManyDifferentEmailAddresses: EmailVerificationStateError =
-    EmailVerificationState.TooManyDifferentEmailAddresses()
+    EmailVerificationState.TooManyDifferentEmailAddresses
 
   "EmailVerificationState JSON serialization and deserialization" - {
 

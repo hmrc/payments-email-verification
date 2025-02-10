@@ -108,7 +108,7 @@ class EmailVerificationControllerSpec extends ItSpec {
 
       val result = connector.startEmailVerification(startEmailVerificationJourneyRequest)
       await(result) shouldBe StartEmailVerificationJourneyResponse.Error(
-        EmailVerificationState.TooManyPasscodeAttempts()
+        EmailVerificationState.TooManyPasscodeAttempts
       )
 
       EmailVerificationStub.verifyRequestEmailVerification(startEmailVerificationJourneyRequest, TestData.ggCredId)
@@ -119,12 +119,12 @@ class EmailVerificationControllerSpec extends ItSpec {
 
       val oldEmailVerificationStatus =
         emailVerificationStatus(TestData.ggCredId, startEmailVerificationJourneyRequest.email)
-          .copy(verificationResult = Some(EmailVerificationResult.Verified()))
+          .copy(verificationResult = Some(EmailVerificationResult.Verified))
 
       emailVerificationStatusRepo.upsert(oldEmailVerificationStatus).futureValue
 
       val result = connector.startEmailVerification(startEmailVerificationJourneyRequest)
-      await(result) shouldBe StartEmailVerificationJourneyResponse.Error(EmailVerificationState.AlreadyVerified())
+      await(result) shouldBe StartEmailVerificationJourneyResponse.Error(EmailVerificationState.AlreadyVerified)
 
       await(emailVerificationStatusRepo.findAllEntries(TestData.ggCredId)) shouldBe List(
         oldEmailVerificationStatus.copy(numberOfPasscodeJourneysStarted = NumberOfPasscodeJourneysStarted(2))
@@ -139,13 +139,13 @@ class EmailVerificationControllerSpec extends ItSpec {
       emailVerificationStatusRepo
         .upsert(
           emailVerificationStatus(TestData.ggCredId, startEmailVerificationJourneyRequest.email)
-            .copy(verificationResult = Some(EmailVerificationResult.Locked()))
+            .copy(verificationResult = Some(EmailVerificationResult.Locked))
         )
         .futureValue
 
       val result = connector.startEmailVerification(startEmailVerificationJourneyRequest)
       await(result) shouldBe StartEmailVerificationJourneyResponse.Error(
-        EmailVerificationState.TooManyPasscodeAttempts()
+        EmailVerificationState.TooManyPasscodeAttempts
       )
       EmailVerificationStub.verifyNoneRequestVerification()
     }
@@ -162,7 +162,7 @@ class EmailVerificationControllerSpec extends ItSpec {
 
       val result = connector.startEmailVerification(startEmailVerificationJourneyRequest)
       await(result) shouldBe StartEmailVerificationJourneyResponse.Error(
-        EmailVerificationState.TooManyPasscodeJourneysStarted()
+        EmailVerificationState.TooManyPasscodeJourneysStarted
       )
       EmailVerificationStub.verifyNoneRequestVerification()
     }
@@ -192,7 +192,7 @@ class EmailVerificationControllerSpec extends ItSpec {
 
       val result = connector.startEmailVerification(startEmailVerificationJourneyRequest)
       await(result) shouldBe StartEmailVerificationJourneyResponse.Error(
-        EmailVerificationState.TooManyDifferentEmailAddresses()
+        EmailVerificationState.TooManyDifferentEmailAddresses
       )
       EmailVerificationStub.verifyNoneRequestVerification()
     }
@@ -217,14 +217,14 @@ class EmailVerificationControllerSpec extends ItSpec {
       )
 
       val result = connector.getEmailVerificationResult(getResultRequest)
-      await(result) shouldBe EmailVerificationResult.Verified()
+      await(result) shouldBe EmailVerificationResult.Verified
 
       val emailVerificationStatus = await(emailVerificationStatusRepo.findAllEntries(TestData.ggCredId))
       emailVerificationStatus.size shouldBe 1
       emailVerificationStatus.headOption.map(_._id) shouldBe Some(id.value)
       emailVerificationStatus.headOption.map(_.email.value.decryptedValue) shouldBe Some(email.value)
       emailVerificationStatus.headOption.map(_.numberOfPasscodeJourneysStarted.value) shouldBe Some(1)
-      emailVerificationStatus.headOption.flatMap(_.verificationResult) shouldBe Some(EmailVerificationResult.Verified())
+      emailVerificationStatus.headOption.flatMap(_.verificationResult) shouldBe Some(EmailVerificationResult.Verified)
 
       EmailVerificationStub.verifyNoneGetVerificationStatus(TestData.ggCredId)
     }
@@ -238,7 +238,7 @@ class EmailVerificationControllerSpec extends ItSpec {
         credId = TestData.ggCredId,
         email = EncryptedEmail(SensitiveString(email.value)),
         numberOfPasscodeJourneysStarted = NumberOfPasscodeJourneysStarted(1),
-        verificationResult = Some(EmailVerificationResult.Verified()),
+        verificationResult = Some(EmailVerificationResult.Verified),
         createdAt = TestData.frozenInstant,
         lastUpdated = TestData.frozenInstant.minusSeconds(100L)
       )
@@ -252,11 +252,11 @@ class EmailVerificationControllerSpec extends ItSpec {
       await(emailVerificationStatusRepo.upsert(oldEmailVerificationStatus))
 
       val result = connector.getEmailVerificationResult(getResultRequest)
-      await(result) shouldBe EmailVerificationResult.Locked()
+      await(result) shouldBe EmailVerificationResult.Locked
 
       await(emailVerificationStatusRepo.findAllEntries(TestData.ggCredId)) shouldBe List(
         oldEmailVerificationStatus.copy(
-          verificationResult = Some(EmailVerificationResult.Locked()),
+          verificationResult = Some(EmailVerificationResult.Locked),
           lastUpdated = TestData.frozenInstant
         )
       )
@@ -328,14 +328,14 @@ class EmailVerificationControllerSpec extends ItSpec {
       )
 
       val result = connector.getEmailVerificationResult(getResultRequest)
-      await(result) shouldBe EmailVerificationResult.Verified()
+      await(result) shouldBe EmailVerificationResult.Verified
 
       val emailVerificationStatus = await(emailVerificationStatusRepo.findAllEntries(TestData.ggCredId))
       emailVerificationStatus.size shouldBe 1
       emailVerificationStatus.headOption.map(_._id) shouldBe Some(id.value)
       emailVerificationStatus.headOption.map(_.email.value.decryptedValue) shouldBe Some(emailWithUpperCase)
       emailVerificationStatus.headOption.map(_.numberOfPasscodeJourneysStarted.value) shouldBe Some(1)
-      emailVerificationStatus.headOption.flatMap(_.verificationResult) shouldBe Some(EmailVerificationResult.Verified())
+      emailVerificationStatus.headOption.flatMap(_.verificationResult) shouldBe Some(EmailVerificationResult.Verified)
 
       EmailVerificationStub.verifyNoneGetVerificationStatus(TestData.ggCredId)
     }

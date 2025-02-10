@@ -18,37 +18,35 @@ package paymentsEmailVerification.models
 
 import enumeratum.{Enum, EnumEntry}
 import play.api.libs.json.OFormat
-import zio.json.{DeriveJsonDecoder, DeriveJsonEncoder, JsonEncoder}
+import io.bullet.borer.derivation.MapBasedCodecs.*
 
 import scala.collection.immutable
 
-sealed trait EmailVerificationState extends EnumEntry
+sealed trait EmailVerificationState extends EnumEntry derives CanEqual
 
-sealed trait EmailVerificationStateError extends EmailVerificationState with Product with Serializable
+sealed trait EmailVerificationStateError extends EmailVerificationState with Product with Serializable derives CanEqual
 
 object EmailVerificationState extends Enum[EmailVerificationState] {
 
   @SuppressWarnings(Array("org.wartremover.warts.Any"))
-  given OFormat[EmailVerificationState] = DerivedJson.oformat(
-    DeriveJsonEncoder.gen[EmailVerificationState],
-    DeriveJsonDecoder.gen[EmailVerificationState]
+  given OFormat[EmailVerificationState] = DerivedJson.Borer.oformat(using
+    deriveAllCodecs[EmailVerificationState]
   )
 
   @SuppressWarnings(Array("org.wartremover.warts.Any"))
-  given OFormat[EmailVerificationStateError] = DerivedJson.oformat(
-    DeriveJsonEncoder.gen[EmailVerificationStateError],
-    DeriveJsonDecoder.gen[EmailVerificationStateError]
+  given OFormat[EmailVerificationStateError] = DerivedJson.Borer.oformat(using
+    deriveAllCodecs[EmailVerificationStateError]
   )
 
-  final case class OkToBeVerified() extends EmailVerificationState
+  case object OkToBeVerified extends EmailVerificationState
 
-  final case class AlreadyVerified() extends EmailVerificationStateError
+  case object AlreadyVerified extends EmailVerificationStateError
 
-  final case class TooManyPasscodeAttempts() extends EmailVerificationStateError
+  case object TooManyPasscodeAttempts extends EmailVerificationStateError
 
-  final case class TooManyPasscodeJourneysStarted() extends EmailVerificationStateError
+  case object TooManyPasscodeJourneysStarted extends EmailVerificationStateError
 
-  final case class TooManyDifferentEmailAddresses() extends EmailVerificationStateError
+  case object TooManyDifferentEmailAddresses extends EmailVerificationStateError
 
   override val values: immutable.IndexedSeq[EmailVerificationState] = findValues
 

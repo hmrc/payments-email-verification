@@ -46,7 +46,7 @@ class StartEmailVerificationJourneyResponseSpec extends UnitSpec {
     StartEmailVerificationJourneyResponse.Success(redirectUrl = "https://example.com/verify-email")
 
   val errorResponse: StartEmailVerificationJourneyResponse =
-    StartEmailVerificationJourneyResponse.Error(reason = EmailVerificationState.TooManyPasscodeAttempts())
+    StartEmailVerificationJourneyResponse.Error(reason = EmailVerificationState.TooManyPasscodeAttempts)
 
   "StartEmailVerificationJourneyResponse JSON serialization and deserialization" - {
 
