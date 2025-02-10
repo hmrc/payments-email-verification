@@ -31,8 +31,8 @@ class EmailVerificationResultSpec extends UnitSpec {
       | "Locked": {}
       |}""".stripMargin)
 
-  val modelVerified: EmailVerificationResult = EmailVerificationResult.Verified()
-  val modelLocked: EmailVerificationResult   = EmailVerificationResult.Locked()
+  val modelVerified: EmailVerificationResult = EmailVerificationResult.Verified
+  val modelLocked: EmailVerificationResult   = EmailVerificationResult.Locked
 
   "EmailVerificationResult JSON serialization and deserialization" - {
 

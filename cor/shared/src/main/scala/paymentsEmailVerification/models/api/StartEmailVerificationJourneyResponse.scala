@@ -16,9 +16,10 @@
 
 package paymentsEmailVerification.models.api
 
+import io.bullet.borer.Codec
 import paymentsEmailVerification.models.{DerivedJson, EmailVerificationStateError}
 import play.api.libs.json.OFormat
-import zio.json.{DeriveJsonDecoder, DeriveJsonEncoder, JsonDecoder, JsonEncoder}
+import io.bullet.borer.derivation.MapBasedCodecs.*
 
 sealed trait StartEmailVerificationJourneyResponse derives CanEqual
 
@@ -30,13 +31,9 @@ object StartEmailVerificationJourneyResponse {
 
   @SuppressWarnings(Array("org.wartremover.warts.Any"))
   given OFormat[StartEmailVerificationJourneyResponse] = {
-
-    given JsonEncoder[EmailVerificationStateError] = DeriveJsonEncoder.gen[EmailVerificationStateError]
-    given JsonDecoder[EmailVerificationStateError] = DeriveJsonDecoder.gen[EmailVerificationStateError]
-
-    DerivedJson.oformat(
-      DeriveJsonEncoder.gen[StartEmailVerificationJourneyResponse],
-      DeriveJsonDecoder.gen[StartEmailVerificationJourneyResponse]
+    given Codec[EmailVerificationStateError] = deriveAllCodecs[EmailVerificationStateError]
+    DerivedJson.Borer.oformat(using
+      deriveAllCodecs[StartEmailVerificationJourneyResponse]
     )
   }
 

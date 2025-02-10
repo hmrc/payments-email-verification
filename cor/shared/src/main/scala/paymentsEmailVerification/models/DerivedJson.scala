@@ -16,19 +16,25 @@
 
 package paymentsEmailVerification.models
 
-import play.api.libs.json.*
-import zio.json.*
+import io.bullet.borer.{Json => BorerJson, *}
+import play.api.libs.json.{JsError, JsObject, JsResult, JsSuccess, JsValue, Json, OFormat}
+
 object DerivedJson {
 
-  def oformat[A](encoder: JsonEncoder[A], decoder: JsonDecoder[A]): OFormat[A] =
-    new OFormat[A] {
-      override def writes(o: A): JsObject =
-        Json.parse(encoder.encodeJson(o).toString).as[JsObject]
+  object Borer {
 
-      override def reads(json: JsValue): JsResult[A] =
-        decoder
-          .decodeJson(json.toString)
-          .fold[JsResult[A]](JsError(_), JsSuccess(_))
-    }
+    def oformat[A](using codec: Codec[A]): OFormat[A] =
+      new OFormat[A] {
+        override def writes(o: A): JsObject =
+          Json.parse(BorerJson.encode(o).toUtf8String).as[JsObject]
+
+        override def reads(json: JsValue): JsResult[A] =
+          BorerJson
+            .decode(json.toString.getBytes("UTF-8"))
+            .to[A]
+            .valueEither
+            .fold[JsResult[A]](e => JsError(e.getMessage), JsSuccess(_))
+      }
+  }
 
 }
