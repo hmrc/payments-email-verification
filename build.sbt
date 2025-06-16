@@ -1,4 +1,3 @@
-import uk.gov.hmrc.DefaultBuildSettings.scalaSettings
 import uk.gov.hmrc.ShellPrompt
 import wartremover.WartRemover.autoImport.wartremoverExcluded
 
