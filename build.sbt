@@ -28,8 +28,6 @@ lazy val commonSettings = Seq[SettingsDefinition](
   buildInfoPackage := name.value.toLowerCase().replaceAllLiterally("-", ""),
   (Compile / doc / scalacOptions) := Seq(), //this will allow to have warnings in `doc` task and not fail the build
   scalafmtOnCompile := true,
-  scalaSettings,
-  uk.gov.hmrc.DefaultBuildSettings.defaultSettings(),
   WartRemoverSettings.wartRemoverSettings,
   ScoverageSettings.scoverageSettings,
   SbtUpdatesSettings.sbtUpdatesSettings
@@ -43,7 +41,6 @@ lazy val microservice = Project(appName, file("."))
     wartremoverExcluded ++= (Compile / routes).value
   )
   .settings(PlayKeys.playDefaultPort := 10800)
-  .settings(resolvers += Resolver.jcenterRepo)
   .disablePlugins(sbt.plugins.JUnitXmlReportPlugin)
   .dependsOn(cor30)
   .aggregate(cor30)
