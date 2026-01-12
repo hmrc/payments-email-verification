@@ -2,14 +2,14 @@ import sbt.*
 
 object AppDependencies {
 
-  private val playVersion = s"-play-30"
+  private val playVersion = "-play-30"
 
-  private val bootstrapVersion = "10.1.0"
-  private val hmrcMongoVersion = "2.7.0"
+  private val bootstrapVersion = "10.5.0"
+  private val hmrcMongoVersion = "2.11.0"
   private val enumeratumPlayVersion = "1.8.2"
   private val catsVersion = "2.13.0"
-  private val cryptoVersion = "8.3.0"
-  private val borerVersion = "1.16.1"
+  private val cryptoVersion = "8.4.0"
+  private val borerVersion = "1.16.2"
 
   lazy val microserviceDependencies: Seq[ModuleID] = {
 
@@ -30,7 +30,6 @@ object AppDependencies {
 
     compile ++ test
   }
-  val circeVersion = "0.14.10"
 
   lazy val corJourneyDependencies: Seq[ModuleID] = Seq(
     // format:: OFF
