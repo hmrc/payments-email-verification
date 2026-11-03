@@ -9,7 +9,7 @@ object AppDependencies {
   private val enumeratumPlayVersion = "1.8.2"
   private val catsVersion = "2.13.0"
   private val cryptoVersion = "8.4.0"
-  private val borerVersion = "1.18.0"
+  private val borerVersion = "1.19.0"
 
   lazy val microserviceDependencies: Seq[ModuleID] = {
 
